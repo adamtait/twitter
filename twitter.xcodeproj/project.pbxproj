@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6172AFB9189A357E00BD6F8D /* Color.m in Sources */ = {isa = PBXBuildFile; fileRef = 6172AFB8189A357E00BD6F8D /* Color.m */; };
+		6172AFBD189A3C5600BD6F8D /* HomeTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6172AFBB189A3C5600BD6F8D /* HomeTableViewController.m */; };
+		6172AFBE189A3C5600BD6F8D /* HomeTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6172AFBC189A3C5600BD6F8D /* HomeTableViewController.xib */; };
 		61C9462E189A31F7003261F9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61C9462D189A31F7003261F9 /* Foundation.framework */; };
 		61C94630189A31F7003261F9 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61C9462F189A31F7003261F9 /* CoreGraphics.framework */; };
 		61C94632189A31F7003261F9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61C94631189A31F7003261F9 /* UIKit.framework */; };
@@ -32,6 +35,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6172AFB7189A357E00BD6F8D /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
+		6172AFB8189A357E00BD6F8D /* Color.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Color.m; sourceTree = "<group>"; };
+		6172AFBA189A3C5600BD6F8D /* HomeTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeTableViewController.h; sourceTree = "<group>"; };
+		6172AFBB189A3C5600BD6F8D /* HomeTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTableViewController.m; sourceTree = "<group>"; };
+		6172AFBC189A3C5600BD6F8D /* HomeTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeTableViewController.xib; sourceTree = "<group>"; };
 		61C9462A189A31F7003261F9 /* twitter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = twitter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61C9462D189A31F7003261F9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		61C9462F189A31F7003261F9 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -74,6 +82,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6172AFB4189A355000BD6F8D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6172AFBA189A3C5600BD6F8D /* HomeTableViewController.h */,
+				6172AFBB189A3C5600BD6F8D /* HomeTableViewController.m */,
+				6172AFBC189A3C5600BD6F8D /* HomeTableViewController.xib */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		6172AFB5189A355800BD6F8D /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				6172AFB7189A357E00BD6F8D /* Color.h */,
+				6172AFB8189A357E00BD6F8D /* Color.m */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
+		6172AFB6189A356300BD6F8D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		61C94621189A31F7003261F9 = {
 			isa = PBXGroup;
 			children = (
@@ -107,6 +141,9 @@
 		61C94633189A31F7003261F9 /* twitter */ = {
 			isa = PBXGroup;
 			children = (
+				6172AFB6189A356300BD6F8D /* Models */,
+				6172AFB5189A355800BD6F8D /* Utilities */,
+				6172AFB4189A355000BD6F8D /* Views */,
 				61C9463C189A31F7003261F9 /* AppDelegate.h */,
 				61C9463D189A31F7003261F9 /* AppDelegate.m */,
 				61C9463F189A31F7003261F9 /* Images.xcassets */,
@@ -220,6 +257,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				61C94638189A31F7003261F9 /* InfoPlist.strings in Resources */,
+				6172AFBE189A3C5600BD6F8D /* HomeTableViewController.xib in Resources */,
 				61C94640189A31F7003261F9 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,7 +277,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6172AFBD189A3C5600BD6F8D /* HomeTableViewController.m in Sources */,
 				61C9463E189A31F7003261F9 /* AppDelegate.m in Sources */,
+				6172AFB9189A357E00BD6F8D /* Color.m in Sources */,
 				61C9463A189A31F7003261F9 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -441,6 +481,7 @@
 				61C94658189A31F7003261F9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		61C94659189A31F7003261F9 /* Build configuration list for PBXNativeTarget "twitterTests" */ = {
 			isa = XCConfigurationList;
@@ -449,6 +490,7 @@
 				61C9465B189A31F7003261F9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

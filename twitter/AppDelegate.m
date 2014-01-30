@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "HomeTableViewController.h"
+#import "Color.h"
 
 @implementation AppDelegate
 
@@ -16,6 +18,14 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    HomeTableViewController *homeTableViewController = [[HomeTableViewController alloc] init];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeTableViewController];
+    
+    [navigationController.navigationBar setBarTintColor:[Color twitterBlue]];
+    self.window.rootViewController = navigationController;
+    
+    [navigationController.navigationBar setNeedsDisplay];
     return YES;
 }
 
