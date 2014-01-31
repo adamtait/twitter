@@ -12,9 +12,6 @@
 
 @interface TweetCell ()
 
-    // private static methods
-    + (CGRect)defaultContentFrame;
-
     // private properties
     @property (nonatomic, strong) Tweet *tweet;
 

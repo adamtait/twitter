@@ -11,6 +11,9 @@
 
 @interface TweetCell : UITableViewCell
 
+    // private static methods
+    + (CGRect)defaultContentFrame;
+
     // public methods
     - (void)updateContentWithTweet:(Tweet *)tweet;
 
