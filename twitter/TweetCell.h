@@ -11,7 +11,7 @@
 
 @interface TweetCell : UITableViewCell
 
-    // private static methods
+    // public static methods
     + (CGRect)defaultContentFrame;
 
     // public methods

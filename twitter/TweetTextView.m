@@ -24,7 +24,7 @@
 
 + (UIFont *)defaultFont
 {
-    return [UIFont systemFontOfSize:12.0];
+    return [UIFont systemFontOfSize:14.0];
 }
 
 + (NSLineBreakMode)defaultLineBreakMode

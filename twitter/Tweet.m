@@ -8,11 +8,17 @@
 
 #import "Tweet.h"
 
+@interface Tweet ()
+
+    // private methods
+    - (NSDictionary *)userDict;
+
+@end
+
 @implementation Tweet
 
-- (NSString *)text {
-    return [self.data valueForKeyPath:@"text"];
-}
+
+#pragma public static methods
 
 + (NSMutableArray *)tweetsWithArray:(NSArray *)array {
     NSMutableArray *tweets = [[NSMutableArray alloc] initWithCapacity:array.count];
@@ -22,6 +28,32 @@
         NSLog(@"got a tweet / %@ /", tweet);
     }
     return tweets;
+}
+
+
+
+#pragma public instance methods
+
+- (NSString *)text {
+    return [self.data valueForKeyPath:@"text"];
+}
+
+- (NSString *)username {
+    return [[self userDict] valueForKeyPath:@"name"];
+}
+
+- (NSString *)userhandle {
+    return [NSString stringWithFormat:@"@%@", [[self userDict] valueForKeyPath:@"screen_name"]];
+}
+
+
+
+
+#pragma private methods
+
+- (NSDictionary *)userDict
+{
+    return [self.data valueForKeyPath:@"user"];
 }
 
 @end

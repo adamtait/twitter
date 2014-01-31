@@ -174,8 +174,6 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
         NSLog(@"%@", response);
         
         self.tweets = [Tweet tweetsWithArray:response];
-        NSLog(@"got tweets / %@ /", self.tweets);
-        
         [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         // Do nothing

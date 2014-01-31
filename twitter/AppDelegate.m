@@ -78,7 +78,7 @@
     HomeTableViewController *homeTableViewController = [[HomeTableViewController alloc] init];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeTableViewController];
     [navigationController.navigationBar setBarTintColor:[Color twitterBlue]];
-    [navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    [navigationController.navigationBar setTintColor:[Color fontWhite]];
     self.window.rootViewController = navigationController;
 }
 

@@ -11,5 +11,8 @@
 @interface Color : NSObject
 
     + (UIColor *)twitterBlue;
+    + (UIColor *)fontWhite;
+    + (UIColor *)fontBlack;
+    + (UIColor *)fontGray;
 
 @end
