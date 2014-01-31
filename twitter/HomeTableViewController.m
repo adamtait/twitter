@@ -8,8 +8,22 @@
 
 #import "HomeTableViewController.h"
 #import "Color.h"
+#import "TweetCell.h"
+#import "User.h"
+#import "TwitterClient.h"
+#import "Tweet.h"
+
+
+static NSString * const cellIdentifier = @"TweetCell";
 
 @interface HomeTableViewController ()
+
+    // private propeties
+    @property (nonatomic, strong) NSMutableArray *tweets;
+
+    // private methods
+    - (void)reload;
+    - (void)signOut:(id)sender;
 
 @end
 
@@ -21,6 +35,7 @@
     if (self) {
         // Custom initialization
         
+        [self reload];
     }
     return self;
 }
@@ -34,6 +49,17 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    // setup the UITableView delegate to be this UITableViewController
+    [self.tableView setDelegate:self];
+    
+    // register the TodoCell class for the reuseIdentifier
+    [[self tableView] registerClass:[TweetCell class] forCellReuseIdentifier:cellIdentifier];
+    
+    // setup navigation bar
+    self.navigationItem.title = @"home";
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"sign out" style:UIBarButtonItemStylePlain target:self action:@selector(signOut:)];
+    [self.navigationItem setRightBarButtonItem:rightBarButton];
 }
 
 - (void)didReceiveMemoryWarning
@@ -47,20 +73,18 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return 1;
+    return [_tweets count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    TweetCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[TweetCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    cell.textLabel.text = @"twit";
-    
-    
+    [cell updateContentWithTweet:_tweets[indexPath.row]];
     return cell;
 }
 
@@ -120,5 +144,40 @@
 }
  
  */
+
+
+- (CGFloat)tableView:(UITableView *)tableView
+heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 90;
+}
+
+
+#pragma private methods
+
+- (void)reload
+{
+    [[TwitterClient instance] homeTimelineWithCount:20 sinceId:0 maxId:0 success:^(AFHTTPRequestOperation *operation, id response) {
+
+        NSLog(@"%@", response);
+        
+        self.tweets = [Tweet tweetsWithArray:response];
+        NSLog(@"got tweets / %@ /", self.tweets);
+        
+        [self.tableView reloadData];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        // Do nothing
+    }];
+}
+
+
+- (void)signOut:(id)sender
+{
+    // TODO delete User
+    // set self.window.rootViewController to LoginViewController
+    [User setCurrentUser:nil];
+}
+
+
 
 @end
