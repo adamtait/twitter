@@ -18,5 +18,6 @@
     @property (nonatomic, strong, readonly) NSString *text;
     @property (nonatomic, strong, readonly) NSString *username;
     @property (nonatomic, strong, readonly) NSString *userhandle;
+    @property (nonatomic, strong, readonly) NSString *profileImageURL;
 
 @end

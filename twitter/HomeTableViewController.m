@@ -59,6 +59,7 @@ static NSString * const cellIdentifier = @"TweetCell";
     
     // setup navigation bar
     self.navigationItem.title = @"home";
+    [self.navigationItem.titleView setTintColor:[Color fontWhite]];
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"sign out" style:UIBarButtonItemStylePlain target:self action:@selector(signOut:)];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
 }

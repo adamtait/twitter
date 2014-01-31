@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Adam Tait. All rights reserved.
 //
 
-
+#import "AFImageRequestOperation.h"
 #import "TweetCell.h"
 #import "TweetTextView.h"
 #import "Color.h"
@@ -21,13 +21,16 @@
     @property (nonatomic, strong) Tweet *tweet;
 
     // private UIKit objects
-    @property (nonatomic, strong) UILabel *username;
-    @property (nonatomic, strong) UILabel *userhandle;
+    @property (nonatomic, strong) UIImageView *profileImageView;
+    @property (nonatomic, strong) UILabel *usernameLabel;
+    @property (nonatomic, strong) UILabel *userhandleLabel;
     @property (nonatomic, strong) TweetTextView *content;
 
     // private methods
     - (TweetTextView *)setupTweetTextView;
     - (UILabel *)setupLabelWithFrame:(CGRect)frame font:(UIFont *)font textColor:(UIColor *)textColor;
+    - (UIImageView *)setupImageViewWithFrame:(CGRect)frame;
+    - (void)loadImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView;
 
 @end
 
@@ -39,7 +42,7 @@
 
 + (CGRect)defaultContentFrame
 {
-    return CGRectMake(10, 40, 300, 60);
+    return CGRectMake(40, 30, 270, 80);
 }
 
 
@@ -47,15 +50,18 @@
 
 + (CGRect)defaultUsernameFrame
 {
-    return CGRectMake(10, 5, 140, 20);
+    return CGRectMake(40, 5, 40, 20);
 }
 
 + (CGRect)defaultUserhandleFrame
 {
-    return CGRectMake(155, 5, 100, 20);
+    return CGRectMake(80, 5, 30, 20);
 }
 
-
++ (CGRect)defaultProfileImageFrame
+{
+    return CGRectMake(5, 10, 30, 35);
+}
 
 
 
@@ -71,15 +77,18 @@
         self.indentationWidth = 0.0;
         self.shouldIndentWhileEditing = NO;
         self.separatorInset = UIEdgeInsetsZero;
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         
         // remove all subviews from the UITableViewCell contentView
         [[self.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
         
-        // add username & userhandle to contentView
-        _username = [self setupLabelWithFrame:[TweetCell defaultUsernameFrame] font:[UIFont boldSystemFontOfSize:14.0] textColor:[Color fontBlack]];
-        _userhandle = [self setupLabelWithFrame:[TweetCell defaultUserhandleFrame] font:[UIFont systemFontOfSize:12.0] textColor:[Color fontBlack]];
-        [self.contentView addSubview:_username];
-        [self.contentView addSubview:_userhandle];
+        // add profileImage & username & userhandle to contentView
+        _profileImageView = [self setupImageViewWithFrame:[TweetCell defaultProfileImageFrame]];
+        _usernameLabel = [self setupLabelWithFrame:[TweetCell defaultUsernameFrame] font:[UIFont boldSystemFontOfSize:14.0] textColor:[Color fontBlack]];
+        _userhandleLabel = [self setupLabelWithFrame:[TweetCell defaultUserhandleFrame] font:[UIFont systemFontOfSize:12.0] textColor:[Color fontBlack]];
+        [self.contentView addSubview:_profileImageView];
+        [self.contentView addSubview:_usernameLabel];
+        [self.contentView addSubview:_userhandleLabel];
         
         // add tweetTextView to contentView
         [self.contentView addSubview:[[self setupTweetTextView] getTextView]];
@@ -98,8 +107,9 @@
 - (void)updateContentWithTweet:(Tweet *)tweet
 {
     _tweet = tweet;
-    _username.text = _tweet.username;
-    _userhandle.text = _tweet.userhandle;
+    [self loadImageFromUrl:_tweet.profileImageURL imageView:_profileImageView];
+    _usernameLabel.text = _tweet.username;
+    _userhandleLabel.text = _tweet.userhandle;
     [_content updateContentWithString:tweet.text];
 }
 
@@ -127,5 +137,26 @@
     return label;
 }
 
+
+- (UIImageView *)setupImageViewWithFrame:(CGRect)frame
+{
+    return [[UIImageView alloc] initWithFrame:frame];
+}
+
+- (void)loadImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView
+{
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+    AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request
+                                                     imageProcessingBlock:nil
+                                                                  success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                                      [imageView setImage:image];
+//                                                                      [imageView setNeedsDisplay];
+                                                                  }
+                                                                  failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                                                      NSLog(@"%@", [error localizedDescription]);
+                                                                  }];
+    [operation start];
+}
 
 @end

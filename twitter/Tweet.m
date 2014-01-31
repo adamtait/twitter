@@ -46,6 +46,9 @@
     return [NSString stringWithFormat:@"@%@", [[self userDict] valueForKeyPath:@"screen_name"]];
 }
 
+- (NSString *)profileImageURL {
+    return [[self userDict] valueForKey:@"profile_image_url"];
+}
 
 
 
