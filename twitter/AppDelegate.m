@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "LoginViewController.h"
 #import "HomeTableViewController.h"
 #import "Color.h"
 
@@ -19,13 +20,13 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    HomeTableViewController *homeTableViewController = [[HomeTableViewController alloc] init];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeTableViewController];
+//    HomeTableViewController *homeTableViewController = [[HomeTableViewController alloc] init];
+//    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeTableViewController];
+//    
+//    [navigationController.navigationBar setBarTintColor:[Color twitterBlue]];
     
-    [navigationController.navigationBar setBarTintColor:[Color twitterBlue]];
-    self.window.rootViewController = navigationController;
     
-    [navigationController.navigationBar setNeedsDisplay];
+    self.window.rootViewController = [[LoginViewController alloc] init];
     return YES;
 }
 

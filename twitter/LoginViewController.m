@@ -7,8 +7,11 @@
 //
 
 #import "LoginViewController.h"
+#import "Color.h"
 
 @interface LoginViewController ()
+
+@property (weak, nonatomic) IBOutlet UIButton *loginButton;
 
 @end
 
@@ -27,6 +30,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    [self.loginButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    self.loginButton.backgroundColor = [Color twitterBlue];
 }
 
 - (void)didReceiveMemoryWarning
