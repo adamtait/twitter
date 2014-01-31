@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Adam Tait. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "AFImageRequestOperation.h"
 #import "TweetCell.h"
 #import "TweetTextView.h"
@@ -140,7 +141,10 @@
 
 - (UIImageView *)setupImageViewWithFrame:(CGRect)frame
 {
-    return [[UIImageView alloc] initWithFrame:frame];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
+    imageView.layer.cornerRadius = 4.0;
+    imageView.clipsToBounds = YES;
+    return imageView;
 }
 
 - (void)loadImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView
