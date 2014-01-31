@@ -8,10 +8,18 @@
 
 #import "LoginViewController.h"
 #import "Color.h"
+#import "TwitterClient.h"
+#import "User.h"
 
 @interface LoginViewController ()
 
-@property (weak, nonatomic) IBOutlet UIButton *loginButton;
+    // private properties
+    @property (weak, nonatomic) IBOutlet UIButton *loginButton;
+
+    // private methods
+    - (IBAction)onLoginButton:(id)sender;
+
+    - (void)onError;
 
 @end
 
@@ -38,6 +46,27 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+# pragma private methods
+
+- (IBAction)onLoginButton:(id)sender {
+    [[TwitterClient instance] authorizeWithCallbackUrl:[NSURL URLWithString:@"adamtait-twitter://success"] success:^(AFOAuth1Token *accessToken, id responseObject) {
+        [[TwitterClient instance] currentUserWithSuccess:^(AFHTTPRequestOperation *operation, id response) {
+            NSLog(@"response: %@", response);
+            [User setCurrentUser:[[User alloc] initWithDictionary:response]];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            [self onError];
+        }];
+        NSLog(@"success!");
+    } failure:^(NSError *error) {
+        [self onError];
+    }];
+}
+
+- (void)onError {
+    [[[UIAlertView alloc] initWithTitle:@"Oops!" message:@"Couldn't log in with Twitter, please try again!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 
 @end

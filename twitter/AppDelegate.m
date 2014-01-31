@@ -10,6 +10,14 @@
 #import "LoginViewController.h"
 #import "HomeTableViewController.h"
 #import "Color.h"
+#import "TwitterClient.h"
+#import "User.h"
+
+@interface AppDelegate ()
+
+    - (void)userDidLogin:(id)notification;
+
+@end
 
 @implementation AppDelegate
 
@@ -20,13 +28,18 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-//    HomeTableViewController *homeTableViewController = [[HomeTableViewController alloc] init];
-//    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeTableViewController];
-//    
-//    [navigationController.navigationBar setBarTintColor:[Color twitterBlue]];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogin:) name:UserDidLoginNotification object:nil];
     
     self.window.rootViewController = [[LoginViewController alloc] init];
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    NSNotification *notification = [NSNotification notificationWithName:kAFApplicationLaunchedWithURLNotification object:nil userInfo:[NSDictionary dictionaryWithObject:url forKey:kAFApplicationLaunchOptionsURLKey]];
+    
+    // TODO: is this really necessary?
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
     return YES;
 }
 
@@ -56,5 +69,19 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+
+#pragma private methods for handling changes from OAuth1Client notifications
+
+- (void)userDidLogin:(id)notification
+{
+    HomeTableViewController *homeTableViewController = [[HomeTableViewController alloc] init];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeTableViewController];
+    [navigationController.navigationBar setBarTintColor:[Color twitterBlue]];
+    self.window.rootViewController = homeTableViewController;
+}
+
+
+
 
 @end

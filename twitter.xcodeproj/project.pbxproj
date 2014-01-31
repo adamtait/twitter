@@ -12,6 +12,9 @@
 		6172AFBE189A3C5600BD6F8D /* HomeTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6172AFBC189A3C5600BD6F8D /* HomeTableViewController.xib */; };
 		6172AFC2189B6A9900BD6F8D /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6172AFC0189B6A9900BD6F8D /* LoginViewController.m */; };
 		6172AFC3189B6A9900BD6F8D /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6172AFC1189B6A9900BD6F8D /* LoginViewController.xib */; };
+		6172AFC6189B723600BD6F8D /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 6172AFC5189B723600BD6F8D /* User.m */; };
+		6172AFC9189B729500BD6F8D /* TwitterClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 6172AFC8189B729500BD6F8D /* TwitterClient.m */; };
+		6172AFCC189B72E200BD6F8D /* RestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6172AFCB189B72E200BD6F8D /* RestObject.m */; };
 		61C9462E189A31F7003261F9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61C9462D189A31F7003261F9 /* Foundation.framework */; };
 		61C94630189A31F7003261F9 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61C9462F189A31F7003261F9 /* CoreGraphics.framework */; };
 		61C94632189A31F7003261F9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61C94631189A31F7003261F9 /* UIKit.framework */; };
@@ -46,6 +49,12 @@
 		6172AFBF189B6A9900BD6F8D /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		6172AFC0189B6A9900BD6F8D /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		6172AFC1189B6A9900BD6F8D /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
+		6172AFC4189B723600BD6F8D /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		6172AFC5189B723600BD6F8D /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		6172AFC7189B729500BD6F8D /* TwitterClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterClient.h; sourceTree = "<group>"; };
+		6172AFC8189B729500BD6F8D /* TwitterClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterClient.m; sourceTree = "<group>"; };
+		6172AFCA189B72E200BD6F8D /* RestObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestObject.h; sourceTree = "<group>"; };
+		6172AFCB189B72E200BD6F8D /* RestObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestObject.m; sourceTree = "<group>"; };
 		61C9462A189A31F7003261F9 /* twitter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = twitter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61C9462D189A31F7003261F9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		61C9462F189A31F7003261F9 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -116,6 +125,12 @@
 		6172AFB6189A356300BD6F8D /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				6172AFC4189B723600BD6F8D /* User.h */,
+				6172AFC5189B723600BD6F8D /* User.m */,
+				6172AFC7189B729500BD6F8D /* TwitterClient.h */,
+				6172AFC8189B729500BD6F8D /* TwitterClient.m */,
+				6172AFCA189B72E200BD6F8D /* RestObject.h */,
+				6172AFCB189B72E200BD6F8D /* RestObject.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -329,6 +344,9 @@
 			files = (
 				6172AFBD189A3C5600BD6F8D /* HomeTableViewController.m in Sources */,
 				61C9463E189A31F7003261F9 /* AppDelegate.m in Sources */,
+				6172AFC6189B723600BD6F8D /* User.m in Sources */,
+				6172AFC9189B729500BD6F8D /* TwitterClient.m in Sources */,
+				6172AFCC189B72E200BD6F8D /* RestObject.m in Sources */,
 				6172AFB9189A357E00BD6F8D /* Color.m in Sources */,
 				61C9463A189A31F7003261F9 /* main.m in Sources */,
 				6172AFC2189B6A9900BD6F8D /* LoginViewController.m in Sources */,
@@ -454,6 +472,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "twitter/twitter-Prefix.pch";
 				INFOPLIST_FILE = "twitter/twitter-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -468,6 +487,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "twitter/twitter-Prefix.pch";
 				INFOPLIST_FILE = "twitter/twitter-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
