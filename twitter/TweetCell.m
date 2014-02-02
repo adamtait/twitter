@@ -30,9 +30,6 @@
 
     // private methods
     - (TweetTextView *)setupTweetTextView;
-    - (UILabel *)setupLabelWithFont:(UIFont *)font textColor:(UIColor *)textColor;
-    - (UIImageView *)setupImageViewWithFrame:(CGRect)frame;
-    - (void)loadImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView;
     - (void)setFavorited:(BOOL)favorited;
 
     - (void)addConstraintsToHeaderLine;
@@ -87,10 +84,10 @@
         [self.contentView addSubview:[[self setupTweetTextView] getTextView]];
         
         // add profileImage & username & userhandle to contentView
-        _profileImageView = [self setupImageViewWithFrame:[TweetCell defaultProfileImageFrame]];
-        _usernameLabel = [self setupLabelWithFont:[UIFont boldSystemFontOfSize:14.0] textColor:[Color fontBlack]];
-        _userhandleLabel = [self setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
-        _dateLabel = [self setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
+        _profileImageView = [TweetCell setupImageViewWithFrame:[TweetCell defaultProfileImageFrame]];
+        _usernameLabel = [TweetCell setupLabelWithFont:[UIFont boldSystemFontOfSize:14.0] textColor:[Color fontBlack]];
+        _userhandleLabel = [TweetCell setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
+        _dateLabel = [TweetCell setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
         [self.contentView addSubview:_profileImageView];
         [self.contentView addSubview:_usernameLabel];
         [self.contentView addSubview:_userhandleLabel];
@@ -121,7 +118,7 @@
 - (void)updateContentWithTweet:(Tweet *)tweet
 {
     _tweet = tweet;
-    [self loadImageFromUrl:_tweet.profileImageURL imageView:_profileImageView];
+    [TweetCell loadImageFromUrl:_tweet.profileImageURL imageView:_profileImageView];
     _usernameLabel.text = _tweet.username;
     [_usernameLabel sizeToFit];
     
@@ -145,7 +142,7 @@
     return _content;
 }
 
-- (UILabel *)setupLabelWithFont:(UIFont *)font textColor:(UIColor *)textColor
++ (UILabel *)setupLabelWithFont:(UIFont *)font textColor:(UIColor *)textColor
 {
     UILabel *label = [[UILabel alloc] init];
     label.font = font;
@@ -161,7 +158,7 @@
 }
 
 
-- (UIImageView *)setupImageViewWithFrame:(CGRect)frame
++ (UIImageView *)setupImageViewWithFrame:(CGRect)frame
 {
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
     imageView.layer.cornerRadius = 4.0;
@@ -169,7 +166,7 @@
     return imageView;
 }
 
-- (void)loadImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView
++ (void)loadImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView
 {
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];

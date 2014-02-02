@@ -23,6 +23,7 @@
     @property BOOL favorited;
 
     // public methods
+    - (id)initWithString:(NSString *)status;
     - (BOOL)createRetweet;
     - (BOOL)toggleFavorite;
 

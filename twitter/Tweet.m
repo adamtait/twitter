@@ -8,6 +8,7 @@
 
 #import "Tweet.h"
 #import "TwitterClient.h"
+#import "User.h"
 
 @interface Tweet ()
 
@@ -59,6 +60,27 @@
 
 
 #pragma public instance methods
+
+- (id)initWithString:(NSString *)status
+{
+    NSMutableDictionary *tweetData = [[NSMutableDictionary alloc] init];
+    [tweetData setValue:status forKey:@"text"];
+    
+    NSMutableDictionary *userDictionary = [[NSMutableDictionary alloc] init];
+
+    [userDictionary setValue:[User currentUser].username forKey:@"name"];
+    NSString *userhandle = [[User currentUser].userhandle substringFromIndex:1];
+    [userDictionary setValue:userhandle forKeyPath:@"screen_name"];
+    [userDictionary setValue:[User currentUser].profileImageURL forKey:@"profile_image_url"];
+    [tweetData setValue:userDictionary forKey:@"user"];
+    
+    self = [super initWithDictionary:tweetData];
+    if (self) {
+        self.createdAt = @"0s";
+    }
+    return self;
+}
+
 
 - (void)generateCreatedFromDateString:(NSString *)createdAtDateString {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];

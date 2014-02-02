@@ -25,5 +25,6 @@
 - (void)createRetweet:(NSString *)tweetId;
 - (void)createFavorite:(NSString *)tweetId;
 - (void)deleteFavorite:(NSString *)tweetId;
+- (void)updateStatusWithString:(NSString *)status;
 
 @end

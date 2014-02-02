@@ -14,7 +14,13 @@ extern NSString *const UserDidLogoutNotification;
 
 @interface User : RestObject
 
-+ (User *)currentUser;
-+ (void)setCurrentUser:(User *)currentUser;
+    // public static class methods
+    + (User *)currentUser;
+    + (void)setCurrentUser:(User *)currentUser;
+
+    // public instance methods
+    @property (nonatomic, strong, readonly) NSString *username;
+    @property (nonatomic, strong, readonly) NSString *userhandle;
+    @property (nonatomic, strong, readonly) NSString *profileImageURL;
 
 @end

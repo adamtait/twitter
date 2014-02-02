@@ -98,6 +98,17 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
            }];
 }
 
+- (void)updateStatusWithString:(NSString *)status
+{
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"status": status}];
+    [self postPath:@"1.1/statuses/update.json" parameters:params
+           success:^(AFHTTPRequestOperation *operation, id response) {
+               // Do nothing
+           } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+               // Do nothing
+           }];
+}
+
 
 
 #pragma mark - Private methods

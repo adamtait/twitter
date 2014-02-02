@@ -48,4 +48,20 @@ static User *_currentUser;
     }
 }
 
+
+#pragma public properties
+
+- (NSString *)username {
+    return _currentUser.data[@"name"];;
+}
+
+- (NSString *)userhandle {
+    return [NSString stringWithFormat:@"@%@", _currentUser.data[@"screen_name"]];
+}
+
+- (NSString *)profileImageURL {
+    return _currentUser.data[@"profile_image_url"];
+}
+
+
 @end

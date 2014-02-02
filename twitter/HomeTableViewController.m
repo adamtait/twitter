@@ -7,6 +7,7 @@
 //
 
 #import "HomeTableViewController.h"
+#import "NewTweetViewController.h"
 #import "Color.h"
 #import "TweetCell.h"
 #import "User.h"
@@ -25,6 +26,8 @@ static NSString * const cellIdentifier = @"TweetCell";
     // private methods
     - (void)reload;
     - (void)signOut:(id)sender;
+    - (void)newTweet:(id)sender;
+    - (void)afterNewTweet:(id)sender;
 
 @end
 
@@ -59,9 +62,19 @@ static NSString * const cellIdentifier = @"TweetCell";
     
     // setup navigation bar
     self.navigationItem.title = @"home";
-    [self.navigationItem.titleView setTintColor:[Color fontWhite]];     // TODO set the NavigationItem font color correctly
-    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"sign out" style:UIBarButtonItemStylePlain target:self action:@selector(signOut:)];
+    
+    [self.navigationController.navigationBar setBarTintColor:[Color twitterBlue]];
+    //    navigationController.navigationBar.barTintColor = [Color twitterBlue];
+    self.navigationController.navigationBar.tintColor = [Color fontWhite];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [Color fontWhite]}];
+//    self.navigationController.navigationBar.translucent = NO;
+    
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"sign out" style:UIBarButtonItemStylePlain target:self action:@selector(signOut:)];
+    [self.navigationItem setLeftBarButtonItem:leftBarButton];
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"new" style:UIBarButtonItemStylePlain target:self action:@selector(newTweet:)];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterNewTweet:) name:@"newTweet" object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -74,7 +87,6 @@ static NSString * const cellIdentifier = @"TweetCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
     return [_tweets count];
 }
 
@@ -180,6 +192,18 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     [User setCurrentUser:nil];
 }
 
+- (void)newTweet:(id)sender
+{
+    [self.navigationController pushViewController:[[NewTweetViewController alloc] init] animated:YES];
+}
+
+- (void)afterNewTweet:(id)sender
+{
+    NSNotification *notification = (NSNotification *)sender;
+    Tweet *tweet = notification.object;
+    [_tweets insertObject:tweet atIndex:0];
+    [self.tableView reloadData];
+}
 
 
 @end

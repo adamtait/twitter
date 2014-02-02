@@ -12,22 +12,22 @@
 
 + (UIColor *)twitterBlue
 {
-    return [UIColor colorWithRed:64.0/255.0 green:153.0/255.0 blue:255.0/255.0 alpha:1];
+    return [UIColor colorWithRed:85.0/255.0 green:172.0/255.0 blue:238.0/255.0 alpha:1];
 }
 
 + (UIColor *)fontWhite
 {
-    return [UIColor whiteColor];
+    return [UIColor colorWithRed:245.0/255.0 green:248.0/255.0 blue:250.0/255.0 alpha:1];
 }
 
 + (UIColor *)fontBlack
 {
-    return [UIColor blackColor];
+    return [UIColor colorWithRed:41.0/255.0 green:47.0/255.0 blue:51.0/255.0 alpha:1];
 }
 
 + (UIColor *)fontGray
 {
-    return [UIColor colorWithRed:179.0/255.0 green:179.0/255.0 blue:177.0/255.0 alpha:1];
+    return [UIColor colorWithRed:102.0/255.0 green:117.0/255.0 blue:127.0/255.0 alpha:1];
 }
 
 @end
