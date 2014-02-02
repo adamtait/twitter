@@ -21,6 +21,7 @@
     @property (nonatomic, strong) UIImageView *profileImageView;
     @property (nonatomic, strong) UILabel *usernameLabel;
     @property (nonatomic, strong) UILabel *userhandleLabel;
+    @property (nonatomic, strong) UILabel *dateLabel;
     @property (nonatomic, strong) TweetTextView *content;
 
     // private methods
@@ -74,10 +75,12 @@
         // add profileImage & username & userhandle to contentView
         _profileImageView = [self setupImageViewWithFrame:[TweetCell defaultProfileImageFrame]];
         _usernameLabel = [self setupLabelWithFont:[UIFont boldSystemFontOfSize:14.0] textColor:[Color fontBlack]];
-        _userhandleLabel = [self setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontBlack]];
+        _userhandleLabel = [self setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
+        _dateLabel = [self setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
         [self.contentView addSubview:_profileImageView];
         [self.contentView addSubview:_usernameLabel];
         [self.contentView addSubview:_userhandleLabel];
+        [self.contentView addSubview:_dateLabel];
         [self addConstraintsToSubviews];
         
         // add tweetTextView to contentView
@@ -102,6 +105,8 @@
     [_usernameLabel sizeToFit];
     
     _userhandleLabel.text = _tweet.userhandle;
+    _dateLabel.text = _tweet.createdAt;
+    
     [_content updateContentWithString:tweet.text];
 }
 
@@ -158,39 +163,41 @@
 {
     UILabel *usernameLabel = _usernameLabel;
     UILabel *userhandleLabel = _userhandleLabel;
+    UILabel *dateLabel = _dateLabel;
     
     // remove auto layout constraints. they make bad guesses at the needed constraints and take high priority
     usernameLabel.translatesAutoresizingMaskIntoConstraints = NO;
     userhandleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
-    // add horizontal & vertical constraints to usernameLabel
+    // add vertical constraints to usernameLabel
     [self.contentView addConstraints:[NSLayoutConstraint
                                       constraintsWithVisualFormat:@"V:|-5-[usernameLabel]"
                                       options:NSLayoutFormatDirectionLeadingToTrailing
                                       metrics:nil
                                       views:NSDictionaryOfVariableBindings(usernameLabel)]];
-    [self.contentView addConstraints:[NSLayoutConstraint
-                                      constraintsWithVisualFormat:@"H:|-40-[usernameLabel]"
-                                      options:NSLayoutFormatDirectionLeadingToTrailing
-                                      metrics:nil
-                                      views:NSDictionaryOfVariableBindings(usernameLabel)]];
     
-    // add constraint separating usernameLabel & userhandleLabel
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:usernameLabel attribute:NSLayoutAttributeRight
-                                                                 relatedBy:NSLayoutRelationEqual toItem:userhandleLabel
-                                                                 attribute:NSLayoutAttributeLeft multiplier:1.0 constant:-10.0]];
-    
-    // add horizontal & vertical constraints to userhandleLabel
+    // add vertical constraints to userhandleLabel
     [self.contentView addConstraints:[NSLayoutConstraint
-                                      constraintsWithVisualFormat:@"V:|-5-[userhandleLabel]"
+                                      constraintsWithVisualFormat:@"V:|-7-[userhandleLabel]"
                                       options:NSLayoutFormatDirectionLeadingToTrailing
                                       metrics:nil
                                       views:NSDictionaryOfVariableBindings(userhandleLabel)]];
+    
+    // add vertical constraints to dateLabel
     [self.contentView addConstraints:[NSLayoutConstraint
-                                      constraintsWithVisualFormat:@"H:[userhandleLabel]-(>=20)-|"
+                                      constraintsWithVisualFormat:@"V:|-7-[dateLabel]"
                                       options:NSLayoutFormatDirectionLeadingToTrailing
                                       metrics:nil
-                                      views:NSDictionaryOfVariableBindings(userhandleLabel)]];
+                                      views:NSDictionaryOfVariableBindings(dateLabel)]];
+    
+    // add constraints separating usernameLabel & userhandleLabel & dateLabel
+    [self.contentView addConstraints:[NSLayoutConstraint
+                                      constraintsWithVisualFormat:@"H:|-40-[usernameLabel]-5-[userhandleLabel]-(>=5)-[dateLabel]-5-|"
+                                      options:NSLayoutFormatDirectionLeadingToTrailing
+                                      metrics:nil
+                                      views:NSDictionaryOfVariableBindings(usernameLabel, userhandleLabel, dateLabel)]];
+    
 }
 
 
