@@ -162,7 +162,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
                                                                  attributes:@{NSFontAttributeName:[TweetTextView defaultFont],
                                                                               NSParagraphStyleAttributeName:paragraphStyle}
                                                                     context:nil];
-    return [TweetCell defaultContentFrame].origin.y + textRect.size.height + 10;
+    return [TweetCell defaultContentFrame].origin.y + textRect.size.height + 25;
 }
 
 
@@ -170,10 +170,8 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)reload
 {
-    [[TwitterClient instance] homeTimelineWithCount:20 sinceId:0 maxId:0 success:^(AFHTTPRequestOperation *operation, id response) {
-
-        NSLog(@"%@", response);
-        
+    [[TwitterClient instance] homeTimelineWithCount:50 sinceId:0 maxId:0
+                                            success:^(AFHTTPRequestOperation *operation, id response) {
         self.tweets = [Tweet tweetsWithArray:response];
         [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
