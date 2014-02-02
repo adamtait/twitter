@@ -28,6 +28,7 @@ static NSString * const cellIdentifier = @"TweetCell";
     - (void)signOut:(id)sender;
     - (void)newTweet:(id)sender;
     - (void)afterNewTweet:(id)sender;
+    - (void)replyToTweet:(id)sender;
 
 @end
 
@@ -75,6 +76,7 @@ static NSString * const cellIdentifier = @"TweetCell";
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterNewTweet:) name:@"newTweet" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(replyToTweet:) name:@"replyToTweet" object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -201,6 +203,15 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     Tweet *tweet = notification.object;
     [_tweets insertObject:tweet atIndex:0];
     [self.tableView reloadData];
+}
+
+- (void)replyToTweet:(id)sender
+{
+    NSNotification *notification = (NSNotification *)sender;
+    Tweet *tweet = notification.object;
+    NewTweetViewController *newTweetViewController = [[NewTweetViewController alloc] init];
+    newTweetViewController.prefilledText = [NSString stringWithFormat:@"%@ ", tweet.userhandle];
+    [self.navigationController pushViewController:newTweetViewController animated:YES];
 }
 
 

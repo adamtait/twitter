@@ -290,14 +290,19 @@
     CGRect retweetAction = CGRectMake((40+16+25), (height-5-16), 16, 16);
     CGRect favoriteAction = CGRectMake((40+16+25+16+25), (height-5-16), 16, 16);
     
-    if (CGRectContainsPoint(replyAction, p)) {
-        
-    } else if (CGRectContainsPoint(retweetAction, p)) {
+    if (CGRectContainsPoint(replyAction, p))
+    {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"replyToTweet" object:self.tweet];
+    }
+    else if (CGRectContainsPoint(retweetAction, p))
+    {
         if (_retweetImageView.image != [UIImage imageNamed:@"retweet_on.png"]) {
             [_retweetImageView setImage:[UIImage imageNamed:@"retweet_on.png"]];
             [self.tweet createRetweet];
         }
-    } else if (CGRectContainsPoint(favoriteAction, p)) {
+    }
+    else if (CGRectContainsPoint(favoriteAction, p))
+    {
         [self setFavorited:!_hasBeenfavorited];
         [self.tweet toggleFavorite];
     }

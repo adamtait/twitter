@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Tweet.h"
 
 @interface NewTweetViewController : UIViewController <UITextViewDelegate>
+
+    // public properties
+    @property (weak, nonatomic) NSString *prefilledText;
 
 @end

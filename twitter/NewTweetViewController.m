@@ -31,7 +31,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        
+        _prefilledText = nil;
         [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Tweet" style:UIBarButtonItemStylePlain target:self action:@selector(sendTweet:)]];
         
     }
@@ -56,6 +56,9 @@
     _usernameLabel.text = [User currentUser].username;
     _userhandleLabel.text = [User currentUser].userhandle;
     
+    if (_prefilledText) {
+        _editableText.text = _prefilledText;
+    }
     _editableText.keyboardType = UIKeyboardTypeTwitter;
     [_editableText becomeFirstResponder];
 }
