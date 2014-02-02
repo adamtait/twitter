@@ -16,6 +16,7 @@
 @interface AppDelegate ()
 
     - (void)userDidLogin:(id)notification;
+    - (void)userDidLogout:(id)notification;
 
 @end
 
@@ -33,8 +34,7 @@
         [self userDidLogin:nil];
     } else {
         // open LoginViewController
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogin:) name:UserDidLoginNotification object:nil];
-        self.window.rootViewController = [[LoginViewController alloc] init];
+        [self userDidLogout:nil];
     }
     
     return YES;
@@ -84,9 +84,15 @@
     HomeTableViewController *homeTableViewController = [[HomeTableViewController alloc] init];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeTableViewController];
     self.window.rootViewController = navigationController;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogout:) name:@"UserDidLogoutNotification" object:nil];
 }
 
-
+- (void)userDidLogout:(id)notification
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogin:) name:UserDidLoginNotification object:nil];
+    self.window.rootViewController = [[LoginViewController alloc] init];
+}
 
 
 @end

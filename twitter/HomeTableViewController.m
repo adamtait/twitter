@@ -187,8 +187,6 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)signOut:(id)sender
 {
-    // TODO delete User
-    // set self.window.rootViewController to LoginViewController
     [User setCurrentUser:nil];
 }
 
