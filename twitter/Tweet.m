@@ -85,6 +85,13 @@
     self.createdAt = timeIntervalString;
 }
 
+- (BOOL)createRetweet
+{
+    NSString *tweetId = self.data[@"id_str"];
+    [[TwitterClient instance] createRetweet:tweetId];
+    return YES;
+}
+
 - (BOOL)toggleFavorite
 {
     NSString *tweetId = self.data[@"id_str"];
@@ -98,7 +105,6 @@
     _favorited = !_favorited;
     return _favorited;
 }
-
 
 
 #pragma private methods

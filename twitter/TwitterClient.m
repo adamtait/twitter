@@ -66,10 +66,20 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
     [self getPath:@"1.1/statuses/home_timeline.json" parameters:params success:success failure:failure];
 }
 
+- (void)createRetweet:(NSString *)tweetId
+{
+    NSString *path = [NSString stringWithFormat:@"1.1/statuses/retweet/%@.json", tweetId];
+    [self postPath:path parameters:[NSMutableDictionary dictionaryWithDictionary:@{@"id": tweetId}]
+           success:^(AFHTTPRequestOperation *operation, id response) {
+               // Do nothing
+           } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+               // Do nothing
+           }];
+}
+
 - (void)createFavorite:(NSString *)tweetId
 {
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"id": tweetId}];
-    [self postPath:@"1.1/favorites/create.json" parameters:params
+    [self postPath:@"1.1/favorites/create.json" parameters:[NSMutableDictionary dictionaryWithDictionary:@{@"id": tweetId}]
           success:^(AFHTTPRequestOperation *operation, id response) {
               // Do nothing
           } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

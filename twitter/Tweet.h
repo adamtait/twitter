@@ -23,6 +23,8 @@
     @property BOOL favorited;
 
     // public methods
+    - (BOOL)createRetweet;
     - (BOOL)toggleFavorite;
+
 
 @end

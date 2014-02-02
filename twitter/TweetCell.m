@@ -39,7 +39,7 @@
     - (void)addConstraintsToFooterLine;
 
     // UIResponder
-    - (void)toggleFavorite:(UITapGestureRecognizer *)recognizer;
+    - (void)tweetActions:(UITapGestureRecognizer *)recognizer;
 
 @end
 
@@ -133,8 +133,7 @@
     [self setFavorited:tweet.favorited];
 
     // add gesture recognizers
-    UITapGestureRecognizer *favoriteGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleFavorite:)];
-    [self.contentView addGestureRecognizer:favoriteGestureRecognizer];
+    [self.contentView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tweetActions:)]];
 }
 
 
@@ -285,11 +284,23 @@
 
 #pragma UIResponder methods
 
-- (void)toggleFavorite:(UITapGestureRecognizer *)recognizer
+- (void)tweetActions:(UITapGestureRecognizer *)recognizer
 {
     int height = [TweetCell defaultContentFrame].origin.y + [_content getLayoutHeight] + 25;
     CGPoint p = [recognizer locationInView:self.contentView];
-    if (CGRectContainsPoint(CGRectMake((40+16+25+16+25), (height-5-16), 16, 16), p)) {
+    
+    CGRect replyAction = CGRectMake(40, (height-5-16), 16, 16);
+    CGRect retweetAction = CGRectMake((40+16+25), (height-5-16), 16, 16);
+    CGRect favoriteAction = CGRectMake((40+16+25+16+25), (height-5-16), 16, 16);
+    
+    if (CGRectContainsPoint(replyAction, p)) {
+        
+    } else if (CGRectContainsPoint(retweetAction, p)) {
+        if (_retweetImageView.image != [UIImage imageNamed:@"retweet_on.png"]) {
+            [_retweetImageView setImage:[UIImage imageNamed:@"retweet_on.png"]];
+            [self.tweet createRetweet];
+        }
+    } else if (CGRectContainsPoint(favoriteAction, p)) {
         [self setFavorited:!_hasBeenfavorited];
         [self.tweet toggleFavorite];
     }
