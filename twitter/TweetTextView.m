@@ -52,7 +52,6 @@
         _textView.textContainerInset = UIEdgeInsetsZero;
         
         _textView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-        _textView.translatesAutoresizingMaskIntoConstraints = YES;
         
         _textView.editable = NO;
     }

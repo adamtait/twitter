@@ -29,7 +29,7 @@
     - (UILabel *)setupLabelWithFont:(UIFont *)font textColor:(UIColor *)textColor;
     - (UIImageView *)setupImageViewWithFrame:(CGRect)frame;
     - (void)loadImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView;
-    - (void)addConstraintsToSubviews;
+    - (void)addConstraintsToHeaderLine;
 
 @end
 
@@ -42,7 +42,7 @@
 
 + (CGRect)defaultContentFrame
 {
-    return CGRectMake(40, 30, 270, 80);
+    return CGRectMake(36, 30, 274, 120);
 }
 
 
@@ -50,7 +50,7 @@
 
 + (CGRect)defaultProfileImageFrame
 {
-    return CGRectMake(5, 10, 30, 35);
+    return CGRectMake(5, 10, 25, 25);
 }
 
 
@@ -81,7 +81,7 @@
         [self.contentView addSubview:_usernameLabel];
         [self.contentView addSubview:_userhandleLabel];
         [self.contentView addSubview:_dateLabel];
-        [self addConstraintsToSubviews];
+        [self addConstraintsToHeaderLine];
         
         // add tweetTextView to contentView
         [self.contentView addSubview:[[self setupTweetTextView] getTextView]];
@@ -159,7 +159,7 @@
 }
 
 
-- (void)addConstraintsToSubviews
+- (void)addConstraintsToHeaderLine
 {
     UILabel *usernameLabel = _usernameLabel;
     UILabel *userhandleLabel = _userhandleLabel;
@@ -199,6 +199,5 @@
                                       views:NSDictionaryOfVariableBindings(usernameLabel, userhandleLabel, dateLabel)]];
     
 }
-
 
 @end
