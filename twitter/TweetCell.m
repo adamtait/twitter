@@ -16,6 +16,7 @@
 
     // private properties
     @property (nonatomic, strong) Tweet *tweet;
+    @property BOOL hasBeenfavorited;
 
     // private UIKit objects
     @property (nonatomic, strong) UIImageView *profileImageView;
@@ -32,8 +33,13 @@
     - (UILabel *)setupLabelWithFont:(UIFont *)font textColor:(UIColor *)textColor;
     - (UIImageView *)setupImageViewWithFrame:(CGRect)frame;
     - (void)loadImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView;
+    - (void)setFavorited:(BOOL)favorited;
+
     - (void)addConstraintsToHeaderLine;
     - (void)addConstraintsToFooterLine;
+
+    // UIResponder
+    - (void)toggleFavorite:(UITapGestureRecognizer *)recognizer;
 
 @end
 
@@ -66,6 +72,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        _hasBeenfavorited = NO;
         
         self.indentationLevel = 0;
         self.indentationWidth = 0.0;
@@ -98,6 +105,7 @@
         [self.contentView addSubview:_retweetImageView];
         [self.contentView addSubview:_favoriteImageView];
         [self addConstraintsToFooterLine];
+        
     }
     return self;
 }
@@ -121,6 +129,12 @@
     _dateLabel.text = _tweet.createdAt;
     
     [_content updateContentWithString:tweet.text];
+    
+    [self setFavorited:tweet.favorited];
+
+    // add gesture recognizers
+    UITapGestureRecognizer *favoriteGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleFavorite:)];
+    [self.contentView addGestureRecognizer:favoriteGestureRecognizer];
 }
 
 
@@ -169,6 +183,18 @@
                                                                       NSLog(@"%@", [error localizedDescription]);
                                                                   }];
     [operation start];
+}
+
+- (void)setFavorited:(BOOL)favorited
+{
+    _hasBeenfavorited = favorited;
+    UIImage *image;
+    if (_hasBeenfavorited) {
+         image = [UIImage imageNamed:@"favorite_on.png"];
+    } else {
+        image = [UIImage imageNamed:@"favorite.png"];
+    }
+    [_favoriteImageView setImage:image];
 }
 
 
@@ -254,6 +280,25 @@
                                       views:NSDictionaryOfVariableBindings(replyImageView, retweetImageView, favoriteImageView)]];
     
 }
+
+
+
+#pragma UIResponder methods
+
+- (void)toggleFavorite:(UITapGestureRecognizer *)recognizer
+{
+    int height = [TweetCell defaultContentFrame].origin.y + [_content getLayoutHeight] + 25;
+    CGPoint p = [recognizer locationInView:self.contentView];
+    if (CGRectContainsPoint(CGRectMake((40+16+25+16+25), (height-5-16), 16, 16), p)) {
+        [self setFavorited:!_hasBeenfavorited];
+        [self.tweet toggleFavorite];
+    }
+}
+
+
+
+
+
 
 
 @end

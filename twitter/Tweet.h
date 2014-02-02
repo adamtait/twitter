@@ -20,5 +20,9 @@
     @property (nonatomic, strong, readonly) NSString *userhandle;
     @property (nonatomic, strong, readonly) NSString *profileImageURL;
     @property (nonatomic, strong) NSString *createdAt;
+    @property BOOL favorited;
+
+    // public methods
+    - (BOOL)toggleFavorite;
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "TweetTextView.h"
+#import "TweetCell.h"
 
 @interface TweetTextView  ()
 
@@ -70,6 +71,18 @@
     NSRange range = NSMakeRange(0, [content length]);
     [_storage addAttribute:NSFontAttributeName value:[TweetTextView defaultFont] range:range];
     
+}
+
+- (int)getLayoutHeight
+{
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = [TweetTextView defaultLineBreakMode];
+    CGRect textRect = [[self getTextView].text boundingRectWithSize:CGSizeMake([TweetCell defaultContentFrame].size.width, MAXFLOAT)
+                                                                    options:(NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin)
+                                                                 attributes:@{NSFontAttributeName:[TweetTextView defaultFont],
+                                                                              NSParagraphStyleAttributeName:paragraphStyle}
+                                                                    context:nil];
+    return textRect.size.height;
 }
 
 @end

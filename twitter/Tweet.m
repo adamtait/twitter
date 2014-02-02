@@ -7,6 +7,7 @@
 //
 
 #import "Tweet.h"
+#import "TwitterClient.h"
 
 @interface Tweet ()
 
@@ -27,8 +28,9 @@
     for (NSDictionary *params in array) {
         Tweet *tweet = [[Tweet alloc] initWithDictionary:params];
         [tweet generateCreatedFromDateString:tweet.data[@"created_at"]];
+        tweet.favorited = [tweet.data[@"favorited"] boolValue];
+
         [tweets addObject:tweet];
-        
         NSLog(@"got a tweet / %@ /", tweet);
     }
     return tweets;
@@ -36,7 +38,7 @@
 
 
 
-#pragma public instance methods
+#pragma public properties
 
 - (NSString *)text {
     return [self.data valueForKey:@"text"];
@@ -53,6 +55,10 @@
 - (NSString *)profileImageURL {
     return [[self userDict] valueForKey:@"profile_image_url"];
 }
+
+
+
+#pragma public instance methods
 
 - (void)generateCreatedFromDateString:(NSString *)createdAtDateString {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -77,6 +83,20 @@
     }
     
     self.createdAt = timeIntervalString;
+}
+
+- (BOOL)toggleFavorite
+{
+    NSString *tweetId = self.data[@"id_str"];
+    if (_favorited) {
+        [[TwitterClient instance] deleteFavorite:tweetId];
+    } else {
+        [[TwitterClient instance] createFavorite:tweetId];
+    }
+    
+    // toggle the favorited boolean
+    _favorited = !_favorited;
+    return _favorited;
 }
 
 

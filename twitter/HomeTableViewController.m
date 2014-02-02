@@ -155,14 +155,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     Tweet *tweet = _tweets[indexPath.row];
     [fakeTextView updateContentWithString:tweet.text];    // setAttributedText:[[NSAttributedString alloc] initWithString:[_todoList getStringForIndex:indexPath.row]]
     
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.lineBreakMode = [TweetTextView defaultLineBreakMode];
-    CGRect textRect = [[fakeTextView getTextView].text boundingRectWithSize:CGSizeMake([TweetCell defaultContentFrame].size.width, MAXFLOAT)
-                                                                    options:(NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin)
-                                                                 attributes:@{NSFontAttributeName:[TweetTextView defaultFont],
-                                                                              NSParagraphStyleAttributeName:paragraphStyle}
-                                                                    context:nil];
-    return [TweetCell defaultContentFrame].origin.y + textRect.size.height + 25;
+    return [TweetCell defaultContentFrame].origin.y + [fakeTextView getLayoutHeight] + 25;
 }
 
 
