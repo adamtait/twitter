@@ -28,9 +28,15 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogin:) name:UserDidLoginNotification object:nil];
+    if ([TwitterClient instance].accessToken) {
+        // open the HomeTableViewController
+        [self userDidLogin:nil];
+    } else {
+        // open LoginViewController
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogin:) name:UserDidLoginNotification object:nil];
+        self.window.rootViewController = [[LoginViewController alloc] init];
+    }
     
-    self.window.rootViewController = [[LoginViewController alloc] init];
     return YES;
 }
 
