@@ -42,6 +42,7 @@
 {
     [super viewDidLoad];
     
+    // TODO get TopLayoutGuide constraint working. shouldn't have to guess at the height below the navigation bar
 //    NSMutableArray *constraints = [[NSMutableArray alloc] init];
 //    NSString *verticalConstraint = @"V:|[v]|";
 //    NSMutableDictionary *views = [NSMutableDictionary new];

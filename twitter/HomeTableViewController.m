@@ -24,7 +24,7 @@ static NSString * const cellIdentifier = @"TweetCell";
     @property (nonatomic, strong) NSMutableArray *tweets;
 
     // private methods
-    - (void)reload;
+- (void)reload:(id)sender;
     - (void)signOut:(id)sender;
     - (void)newTweet:(id)sender;
     - (void)afterNewTweet:(id)sender;
@@ -40,7 +40,7 @@ static NSString * const cellIdentifier = @"TweetCell";
     if (self) {
         // Custom initialization
         
-        [self reload];
+        [self reload:nil];
     }
     return self;
 }
@@ -77,6 +77,10 @@ static NSString * const cellIdentifier = @"TweetCell";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterNewTweet:) name:@"newTweet" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(replyToTweet:) name:@"replyToTweet" object:nil];
+    
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(reload:) forControlEvents:UIControlEventValueChanged];
+    [self setRefreshControl:refreshControl];
 }
 
 - (void)didReceiveMemoryWarning
@@ -175,12 +179,14 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma private methods
 
-- (void)reload
+- (void)reload:(id)sender
 {
+    NSLog(@"attempting to reload all tweet data");
     [[TwitterClient instance] homeTimelineWithCount:50 sinceId:0 maxId:0
                                             success:^(AFHTTPRequestOperation *operation, id response) {
         self.tweets = [Tweet tweetsWithArray:response];
         [self.tableView reloadData];
+        [self.refreshControl endRefreshing];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         // Do nothing
     }];
