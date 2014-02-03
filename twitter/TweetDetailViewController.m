@@ -14,6 +14,7 @@
     // private properties
     @property (nonatomic, strong) Tweet *tweet;
     @property (nonatomic, strong) TweetView *tweetView;
+    @property int heightOfFooterLine;
 
     // private methods <UIResponder>
     - (void)tweetActions:(UITapGestureRecognizer *)recognizer;
@@ -36,8 +37,10 @@
     self = [super init];
     if (self) {
         _tweet = tweet;
+        _heightOfFooterLine = 230;
         self.navigationItem.title = @"tweet";
-        _tweetView = [[TweetView alloc] initWithFrame:CGRectMake(0, 80, 320, 320)];
+        
+        _tweetView = [[TweetView alloc] initWithFrame:CGRectMake(0, 80, 320, (_heightOfFooterLine - 80))];
         [self.view addSubview:_tweetView];
         
         // add gesture recognizers
@@ -52,7 +55,8 @@
     [super viewDidLoad];
     [_tweetView initTwitterActionImageViewsWithSuperView:self.view];
     [_tweetView updateContentWithTweet:_tweet];
-    [_tweetView addConstraintsToFooterLineWithSuperView:self.view];
+    [_tweetView addConstraintsToFooterLineWithSuperView:self.view fixedHeight:_heightOfFooterLine];
+    [self.view sendSubviewToBack:_tweetView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -66,18 +70,18 @@
 
 - (void)tweetActions:(UITapGestureRecognizer *)recognizer
 {
-    int yPositionOfContent;
-    if (_tweet.retweeted) {
-        yPositionOfContent = [TweetView defaultContentFrameWithRetweetHeader].origin.y;
-    } else {
-        yPositionOfContent = [TweetView defaultContentFrame].origin.y;
-    }
-    int height = yPositionOfContent + [_tweetView.content getLayoutHeight] + 25;
+//    int yPositionOfContent;
+//    if (_tweet.retweeted) {
+//        yPositionOfContent = [TweetView defaultContentFrameWithRetweetHeader].origin.y;
+//    } else {
+//        yPositionOfContent = [TweetView defaultContentFrame].origin.y;
+//    }
+//    int height = yPositionOfContent + [_tweetView.content getLayoutHeight] + 25;
     CGPoint p = [recognizer locationInView:self.view];
     
-    CGRect replyAction = CGRectMake(40, (height-5-16), 16, 16);
-    CGRect retweetAction = CGRectMake((40+16+25), (height-5-16), 16, 16);
-    CGRect favoriteAction = CGRectMake((40+16+25+16+25), (height-5-16), 16, 16);
+    CGRect replyAction = CGRectMake(40, _heightOfFooterLine, 16, 16);
+    CGRect retweetAction = CGRectMake((40+16+25), _heightOfFooterLine, 16, 16);
+    CGRect favoriteAction = CGRectMake((40+16+25+16+25), _heightOfFooterLine, 16, 16);
     
     if (CGRectContainsPoint(replyAction, p))
     {

@@ -263,6 +263,43 @@
     
 }
 
+
+- (void)addConstraintsToFooterLineWithSuperView:(UIView *)superView fixedHeight:(int)fixedHeight
+{
+    UIImageView *replyImageView = _replyImageView;
+    UIImageView *retweetImageView = _retweetImageView;
+    UIImageView *favoriteImageView = _favoriteImageView;
+    
+    replyImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    retweetImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    favoriteImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    // add vertical constraints to replyImageView
+    [superView addConstraints:[NSLayoutConstraint
+                               constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%d-[replyImageView]", fixedHeight]
+                               options:NSLayoutFormatDirectionLeadingToTrailing
+                               metrics:nil
+                               views:NSDictionaryOfVariableBindings(replyImageView)]];
+    // add vertical constraints to retweetImageView
+    [superView addConstraints:[NSLayoutConstraint
+                               constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%d-[retweetImageView]", fixedHeight]
+                               options:NSLayoutFormatDirectionLeadingToTrailing
+                               metrics:nil
+                               views:NSDictionaryOfVariableBindings(retweetImageView)]];
+    // add vertical constraints to favoriteImageView
+    [superView addConstraints:[NSLayoutConstraint
+                               constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%d-[favoriteImageView]", fixedHeight]
+                               options:NSLayoutFormatDirectionLeadingToTrailing
+                               metrics:nil
+                               views:NSDictionaryOfVariableBindings(favoriteImageView)]];
+    
+    [superView addConstraints:[NSLayoutConstraint
+                               constraintsWithVisualFormat:@"H:|-40-[replyImageView]-25-[retweetImageView]-25-[favoriteImageView]"
+                               options:NSLayoutFormatDirectionLeadingToTrailing
+                               metrics:nil
+                               views:NSDictionaryOfVariableBindings(replyImageView, retweetImageView, favoriteImageView)]];
+}
+
 - (int)addConstraintsToRetweetHeaderLine
 {
     UIImageView *retweetHeaderImageView = _retweetHeaderImageView;
