@@ -16,11 +16,16 @@
 
 - (void)authorizeWithCallbackUrl:(NSURL *)callbackUrl success:(void (^)(AFOAuth1Token *accessToken, id responseObject))success failure:(void (^)(NSError *error))failure;
 
-- (void)currentUserWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id response))success failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+- (void)currentUserWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id response))success
+                       failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 // Statuses API
 
-- (void)homeTimelineWithCount:(int)count sinceId:(int)sinceId maxId:(int)maxId success:(void (^)(AFHTTPRequestOperation *operation, id response))success failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+- (void)homeTimelineWithCount:(int)count
+                      sinceId:(NSString *)sinceId
+                        maxId:(NSString *)maxId
+                      success:(void (^)(AFHTTPRequestOperation *operation, id response))success
+                      failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 - (void)createRetweet:(NSString *)tweetId;
 - (void)createFavorite:(NSString *)tweetId;

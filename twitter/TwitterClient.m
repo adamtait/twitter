@@ -43,26 +43,33 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
 
 #pragma mark - Users API
 
-- (void)authorizeWithCallbackUrl:(NSURL *)callbackUrl success:(void (^)(AFOAuth1Token *accessToken, id responseObject))success failure:(void (^)(NSError *error))failure {
+- (void)authorizeWithCallbackUrl:(NSURL *)callbackUrl
+                         success:(void (^)(AFOAuth1Token *accessToken, id responseObject))success
+                         failure:(void (^)(NSError *error))failure {
     self.accessToken = nil;
     [super authorizeUsingOAuthWithRequestTokenPath:@"oauth/request_token" userAuthorizationPath:@"oauth/authorize" callbackURL:callbackUrl accessTokenPath:@"oauth/access_token" accessMethod:@"POST" scope:nil success:success failure:failure];
 }
 
-- (void)currentUserWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id response))success failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
+- (void)currentUserWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id response))success
+                       failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
     [self getPath:@"1.1/account/verify_credentials.json" parameters:nil success:success failure:failure];
 }
 
 #pragma mark - Statuses API
 
-- (void)homeTimelineWithCount:(int)count sinceId:(int)sinceId maxId:(int)maxId
-                      success:(void (^)(AFHTTPRequestOperation *operation, id response))success failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
+- (void)homeTimelineWithCount:(int)count
+                      sinceId:(NSString *)sinceId
+                        maxId:(NSString *)maxId
+                      success:(void (^)(AFHTTPRequestOperation *operation, id response))success
+                      failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"count": @(count)}];
-    if (sinceId > 0) {
-        [params setObject:@(sinceId) forKey:@"since_id"];
+    if (sinceId) {
+        [params setObject:sinceId forKey:@"since_id"];
     }
-    if (maxId > 0) {
-        [params setObject:@(maxId) forKey:@"max_id"];
+    if (maxId) {
+        [params setObject:maxId forKey:@"max_id"];
     }
+    NSLog(@"sending timeline request to twitter with params / %@ /", params);
     [self getPath:@"1.1/statuses/home_timeline.json" parameters:params success:success failure:failure];
 }
 

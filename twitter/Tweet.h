@@ -20,7 +20,9 @@
     @property (nonatomic, strong, readonly) NSString *userhandle;
     @property (nonatomic, strong, readonly) NSString *profileImageURL;
     @property (nonatomic, strong) NSString *createdAt;
+    @property (nonatomic, strong, readonly) NSString *idStr;
     @property BOOL favorited;
+    @property BOOL retweeted;
 
     // public methods
     - (id)initWithString:(NSString *)status;

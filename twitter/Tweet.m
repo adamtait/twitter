@@ -30,6 +30,7 @@
         Tweet *tweet = [[Tweet alloc] initWithDictionary:params];
         [tweet generateCreatedFromDateString:tweet.data[@"created_at"]];
         tweet.favorited = [tweet.data[@"favorited"] boolValue];
+        tweet.retweeted = tweet.data[@"retweeted_status"] != nil;
 
         [tweets addObject:tweet];
         NSLog(@"got a tweet / %@ /", tweet);
@@ -55,6 +56,10 @@
 
 - (NSString *)profileImageURL {
     return [[self userDict] valueForKey:@"profile_image_url"];
+}
+
+- (NSString *)idStr {
+    return self.data[@"id_str"];
 }
 
 
@@ -109,18 +114,16 @@
 
 - (BOOL)createRetweet
 {
-    NSString *tweetId = self.data[@"id_str"];
-    [[TwitterClient instance] createRetweet:tweetId];
+    [[TwitterClient instance] createRetweet:self.idStr];
     return YES;
 }
 
 - (BOOL)toggleFavorite
 {
-    NSString *tweetId = self.data[@"id_str"];
     if (_favorited) {
-        [[TwitterClient instance] deleteFavorite:tweetId];
+        [[TwitterClient instance] deleteFavorite:self.idStr];
     } else {
-        [[TwitterClient instance] createFavorite:tweetId];
+        [[TwitterClient instance] createFavorite:self.idStr];
     }
     
     // toggle the favorited boolean

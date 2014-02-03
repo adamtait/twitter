@@ -103,6 +103,20 @@ static NSString * const cellIdentifier = @"TweetCell";
     if (cell == nil) {
         cell = [[TweetCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
+    if (indexPath.row > ([_tweets count] - 10)) {
+        // to handle infinite scrolling, let's load more tweets
+        int indexOfLastLoadedTweet = [_tweets count] - 1;
+        Tweet *lastLoadedTweet = _tweets[indexOfLastLoadedTweet];
+        [[TwitterClient instance] homeTimelineWithCount:50 sinceId:nil maxId:lastLoadedTweet.idStr
+                                                success:^(AFHTTPRequestOperation *operation, id response) {
+                                                    
+                                                    [_tweets addObjectsFromArray:[Tweet tweetsWithArray:response]];
+                                                    [self.tableView reloadData];
+                                                    
+                                                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                    // TODO handle network error
+                                                }];
+    }
     
     [cell updateContentWithTweet:_tweets[indexPath.row]];
     return cell;
@@ -182,13 +196,13 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)reload:(id)sender
 {
     NSLog(@"attempting to reload all tweet data");
-    [[TwitterClient instance] homeTimelineWithCount:50 sinceId:0 maxId:0
+    [[TwitterClient instance] homeTimelineWithCount:50 sinceId:nil maxId:nil
                                             success:^(AFHTTPRequestOperation *operation, id response) {
         self.tweets = [Tweet tweetsWithArray:response];
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        // Do nothing
+        // TODO handle network error
     }];
 }
 
