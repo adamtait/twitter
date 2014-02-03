@@ -31,6 +31,7 @@
     
     if ([TwitterClient instance].accessToken) {
         // open the HomeTableViewController
+        [User setCurrentUser:[User currentUser]];
         [self userDidLogin:nil];
     } else {
         // open LoginViewController
@@ -81,11 +82,10 @@
 
 - (void)userDidLogin:(id)notification
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogout:) name:UserDidLogoutNotification object:nil];
     HomeTableViewController *homeTableViewController = [[HomeTableViewController alloc] init];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeTableViewController];
     self.window.rootViewController = navigationController;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogout:) name:@"UserDidLogoutNotification" object:nil];
 }
 
 - (void)userDidLogout:(id)notification
