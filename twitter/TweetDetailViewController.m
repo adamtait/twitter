@@ -37,7 +37,7 @@
     self = [super init];
     if (self) {
         _tweet = tweet;
-        _heightOfFooterLine = 230;
+        _heightOfFooterLine = 260;
         self.navigationItem.title = @"tweet";
         
         _tweetView = [[TweetView alloc] initWithFrame:CGRectMake(0, 80, 320, (_heightOfFooterLine - 80))];
