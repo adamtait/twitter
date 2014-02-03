@@ -52,15 +52,17 @@
 # pragma private methods
 
 - (IBAction)onLoginButton:(id)sender {
-    [[TwitterClient instance] authorizeWithCallbackUrl:[NSURL URLWithString:@"adamtait-twitter://success"] success:^(AFOAuth1Token *accessToken, id responseObject) {
-        [[TwitterClient instance] currentUserWithSuccess:^(AFHTTPRequestOperation *operation, id response) {
-            [User setCurrentUser:[[User alloc] initWithDictionary:response]];
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            [self onError];
-        }];
-    } failure:^(NSError *error) {
-        [self onError];
-    }];
+    NSLog(@"attempting to login");
+    [[TwitterClient instance] authorizeWithCallbackUrl:[NSURL URLWithString:@"adamtait-twitter://success"]
+                                               success:^(AFOAuth1Token *accessToken, id responseObject) {
+                                                   [[TwitterClient instance] currentUserWithSuccess:^(AFHTTPRequestOperation *operation, id response) {
+                                                       [User setCurrentUser:[[User alloc] initWithDictionary:response]];
+                                                   } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                       [self onError];
+                                                   }];
+                                               } failure:^(NSError *error) {
+                                                   [self onError];
+                                               }];
 }
 
 - (void)onError {

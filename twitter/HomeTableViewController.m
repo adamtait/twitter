@@ -14,6 +14,7 @@
 #import "TwitterClient.h"
 #import "Tweet.h"
 #import "TweetTextView.h"
+#import "TweetView.h"
 
 
 static NSString * const cellIdentifier = @"TweetCell";
@@ -183,14 +184,14 @@ static NSString * const cellIdentifier = @"TweetCell";
 - (CGFloat)tableView:(UITableView *)tableView
 heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TweetTextView *fakeTextView = [[TweetTextView alloc] initWithFrame:[TweetCell defaultContentFrame]];
+    TweetTextView *fakeTextView = [[TweetTextView alloc] initWithFrame:[TweetView defaultContentFrame]];
     Tweet *tweet = _tweets[indexPath.row];
     [fakeTextView updateContentWithString:tweet.text];    // setAttributedText:[[NSAttributedString alloc] initWithString:[_todoList getStringForIndex:indexPath.row]]
     
     if (tweet.retweeted) {
-        return (5 + 16) + [TweetCell defaultContentFrame].origin.y + [fakeTextView getLayoutHeight] + 25;
+        return (5 + 16) + [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeight] + 25;
     } else {
-        return [TweetCell defaultContentFrame].origin.y + [fakeTextView getLayoutHeight] + 25;
+        return [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeight] + 25;
     }
 }
 

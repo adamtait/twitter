@@ -8,8 +8,7 @@
 
 #import "NewTweetViewController.h"
 #import "User.h"
-#import "TweetCell.h"
-#import "Color.h"
+#import "TweetView.h"
 #import "TwitterClient.h"
 #import "Tweet.h"
 
@@ -53,7 +52,7 @@
 //    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:verticalConstraint options:0 metrics:nil views:views]];
 //    [self.view addConstraints:constraints];
     
-    [TweetCell loadImageFromUrl:[User currentUser].profileImageURL imageView:_profileImageView];
+    [TweetView loadImageFromUrl:[User currentUser].profileImageURL imageView:_profileImageView];
     _usernameLabel.text = [User currentUser].username;
     _userhandleLabel.text = [User currentUser].userhandle;
     

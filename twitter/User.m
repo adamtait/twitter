@@ -39,6 +39,8 @@ static User *_currentUser;
     }
     [[NSUserDefaults standardUserDefaults] synchronize];
     
+    NSLog(@"setting current user / %@ / %@ /", _currentUser, currentUser);
+    
     if (!_currentUser && currentUser) {
         _currentUser = currentUser; // Needs to be set before firing the notification
         [[NSNotificationCenter defaultCenter] postNotificationName:UserDidLoginNotification object:nil];

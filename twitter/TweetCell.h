@@ -11,13 +11,6 @@
 
 @interface TweetCell : UITableViewCell
 
-    // public static methods
-    + (CGRect)defaultContentFrame;
-    + (CGRect)defaultContentFrameWithRetweetHeader;
-    + (UILabel *)setupLabelWithFont:(UIFont *)font textColor:(UIColor *)textColor;
-    + (UIImageView *)setupImageView;
-    + (void)loadImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView;
-
     // public methods
     - (void)updateContentWithTweet:(Tweet *)tweet;
 
