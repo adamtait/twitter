@@ -27,13 +27,16 @@
     @property (nonatomic, strong) UIImageView *replyImageView;
     @property (nonatomic, strong) UIImageView *retweetImageView;
     @property (nonatomic, strong) UIImageView *favoriteImageView;
+    @property (nonatomic, strong) UIImageView *retweetHeaderImageView;
+    @property (nonatomic, strong) UILabel *retweetHeaderLabel;
 
     // private methods
-    - (TweetTextView *)setupTweetTextView;
     - (void)setFavorited:(BOOL)favorited;
 
-    - (void)addConstraintsToHeaderLine;
-    - (void)addConstraintsToFooterLine;
+    // handling constraints
+    - (void)addConstraintsToHeaderLineWithHeightOffset:(int)heightOffet;
+    - (void)addConstraintsToFooterLineWithHeightOffset:(int)heightOffet;
+    - (int)addConstraintsToRetweetHeaderLine;
 
     // UIResponder
     - (void)tweetActions:(UITapGestureRecognizer *)recognizer;
@@ -52,15 +55,10 @@
     return CGRectMake((7 + 25 + 5), 25, 274, 120);
 }
 
-
-#pragma private static methods
-
-+ (CGRect)defaultProfileImageFrame
++ (CGRect)defaultContentFrameWithRetweetHeader
 {
-    return CGRectMake(7, 7, 25, 25);
+    return CGRectMake((7 + 25 + 5), 25 + (5 + 16), 274, 120);
 }
-
-
 
 
 #pragma public instance methods
@@ -80,11 +78,8 @@
         // remove all subviews from the UITableViewCell contentView
         [[self.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
         
-        // add tweetTextView to contentView
-        [self.contentView addSubview:[[self setupTweetTextView] getTextView]];
-        
         // add profileImage & username & userhandle to contentView
-        _profileImageView = [TweetCell setupImageViewWithFrame:[TweetCell defaultProfileImageFrame]];
+        _profileImageView = [TweetCell setupImageView];
         _usernameLabel = [TweetCell setupLabelWithFont:[UIFont boldSystemFontOfSize:14.0] textColor:[Color fontBlack]];
         _userhandleLabel = [TweetCell setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
         _dateLabel = [TweetCell setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
@@ -92,7 +87,6 @@
         [self.contentView addSubview:_usernameLabel];
         [self.contentView addSubview:_userhandleLabel];
         [self.contentView addSubview:_dateLabel];
-        [self addConstraintsToHeaderLine];
         
         // add the twitter action images to contentView
         _replyImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"reply.png"]];
@@ -101,8 +95,6 @@
         [self.contentView addSubview:_replyImageView];
         [self.contentView addSubview:_retweetImageView];
         [self.contentView addSubview:_favoriteImageView];
-        [self addConstraintsToFooterLine];
-        
     }
     return self;
 }
@@ -125,9 +117,32 @@
     _userhandleLabel.text = _tweet.userhandle;
     _dateLabel.text = _tweet.createdAt;
     
-    [_content updateContentWithString:tweet.text];
-    
     [self setFavorited:tweet.favorited];
+    
+    if (tweet.retweeted)
+    {
+        _retweetHeaderImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"retweet.png"]];
+        [self.contentView addSubview:_retweetHeaderImageView];
+        _retweetHeaderLabel = [TweetCell setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
+        _retweetHeaderLabel.text = tweet.originatorUserhandle;
+        [self.contentView addSubview:_retweetHeaderLabel];
+        
+        int retweetHeaderHeight = [self addConstraintsToRetweetHeaderLine];
+        [self addConstraintsToHeaderLineWithHeightOffset:retweetHeaderHeight];
+        [self addConstraintsToFooterLineWithHeightOffset:retweetHeaderHeight];
+        
+        _content = [[TweetTextView alloc] initWithFrame:[TweetCell defaultContentFrameWithRetweetHeader]];
+    }
+    else
+    {
+        [self addConstraintsToHeaderLineWithHeightOffset:0];
+        [self addConstraintsToFooterLineWithHeightOffset:0];
+        
+        _content = [[TweetTextView alloc] initWithFrame:[TweetCell defaultContentFrame]];
+    }
+    [self.contentView addSubview:[_content getTextView]];
+    [self.contentView sendSubviewToBack:[_content getTextView]];
+    [_content updateContentWithString:tweet.text];
 
     // add gesture recognizers
     [self.contentView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tweetActions:)]];
@@ -136,11 +151,6 @@
 
 #pragma setup UIKit objects
 
-- (TweetTextView *)setupTweetTextView
-{
-    _content = [[TweetTextView alloc] initWithFrame:[TweetCell defaultContentFrame]];
-    return _content;
-}
 
 + (UILabel *)setupLabelWithFont:(UIFont *)font textColor:(UIColor *)textColor
 {
@@ -158,9 +168,9 @@
 }
 
 
-+ (UIImageView *)setupImageViewWithFrame:(CGRect)frame
++ (UIImageView *)setupImageView
 {
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
+    UIImageView *imageView = [[UIImageView alloc] init];
     imageView.layer.cornerRadius = 4.0;
     imageView.clipsToBounds = YES;
     return imageView;
@@ -197,50 +207,48 @@
 
 #pragma adding & handling constraints
 
-
-- (void)addConstraintsToHeaderLine
+- (void)addConstraintsToHeaderLineWithHeightOffset:(int)heightOffet
 {
+    int verticalBuffer = (heightOffet + 5) * -1;
+    
+    UIImageView *profileImageView = _profileImageView;
     UILabel *usernameLabel = _usernameLabel;
     UILabel *userhandleLabel = _userhandleLabel;
     UILabel *dateLabel = _dateLabel;
     
     // remove auto layout constraints. they make bad guesses at the needed constraints and take high priority
+    profileImageView.translatesAutoresizingMaskIntoConstraints = NO;
     usernameLabel.translatesAutoresizingMaskIntoConstraints = NO;
     userhandleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
+
+    // add vertical constraints to profileImage View
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual toItem:profileImageView
+                                                                 attribute:NSLayoutAttributeTop multiplier:1.0 constant:(verticalBuffer - 2)]];
+
     
-    // add vertical constraints to usernameLabel
+    // add vertical constraints to username, userhandle & date labels
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual toItem:usernameLabel
+                                                                 attribute:NSLayoutAttributeTop multiplier:1.0 constant:verticalBuffer]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual toItem:userhandleLabel
+                                                                 attribute:NSLayoutAttributeTop multiplier:1.0 constant:(verticalBuffer - 2)]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual toItem:dateLabel
+                                                                 attribute:NSLayoutAttributeTop multiplier:1.0 constant:(verticalBuffer - 2)]];
+    // add constraints separating all labels & images
     [self.contentView addConstraints:[NSLayoutConstraint
-                                      constraintsWithVisualFormat:@"V:|-5-[usernameLabel]"
+                                      constraintsWithVisualFormat:@"H:|-7-[profileImageView]-7-[usernameLabel]-5-[userhandleLabel]-(>=5)-[dateLabel]-5-|"
                                       options:NSLayoutFormatDirectionLeadingToTrailing
                                       metrics:nil
-                                      views:NSDictionaryOfVariableBindings(usernameLabel)]];
-    
-    // add vertical constraints to userhandleLabel
-    [self.contentView addConstraints:[NSLayoutConstraint
-                                      constraintsWithVisualFormat:@"V:|-7-[userhandleLabel]"
-                                      options:NSLayoutFormatDirectionLeadingToTrailing
-                                      metrics:nil
-                                      views:NSDictionaryOfVariableBindings(userhandleLabel)]];
-    
-    // add vertical constraints to dateLabel
-    [self.contentView addConstraints:[NSLayoutConstraint
-                                      constraintsWithVisualFormat:@"V:|-7-[dateLabel]"
-                                      options:NSLayoutFormatDirectionLeadingToTrailing
-                                      metrics:nil
-                                      views:NSDictionaryOfVariableBindings(dateLabel)]];
-    
-    // add constraints separating usernameLabel & userhandleLabel & dateLabel
-    [self.contentView addConstraints:[NSLayoutConstraint
-                                      constraintsWithVisualFormat:@"H:|-40-[usernameLabel]-5-[userhandleLabel]-(>=5)-[dateLabel]-5-|"
-                                      options:NSLayoutFormatDirectionLeadingToTrailing
-                                      metrics:nil
-                                      views:NSDictionaryOfVariableBindings(usernameLabel, userhandleLabel, dateLabel)]];
+                                      views:NSDictionaryOfVariableBindings(profileImageView, usernameLabel, userhandleLabel, dateLabel)]];
     
 }
 
 
-- (void)addConstraintsToFooterLine
+- (void)addConstraintsToFooterLineWithHeightOffset:(int)heightOffet
 {
     UIImageView *replyImageView = _replyImageView;
     UIImageView *retweetImageView = _retweetImageView;
@@ -262,7 +270,7 @@
                                       options:NSLayoutFormatDirectionLeadingToTrailing
                                       metrics:nil
                                       views:NSDictionaryOfVariableBindings(retweetImageView)]];
-    // add vertical constraints tp favoriteImageView
+    // add vertical constraints to favoriteImageView
     [self.contentView addConstraints:[NSLayoutConstraint
                                       constraintsWithVisualFormat:@"V:[favoriteImageView]-5-|"
                                       options:NSLayoutFormatDirectionLeadingToTrailing
@@ -277,13 +285,50 @@
     
 }
 
+- (int)addConstraintsToRetweetHeaderLine
+{
+    UIImageView *retweetHeaderImageView = _retweetHeaderImageView;
+    UILabel *retweetHeaderLabel = _retweetHeaderLabel;
+    
+    retweetHeaderImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    retweetHeaderLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    // add vertical constraints to retweetHeaderImageView
+    [self.contentView addConstraints:[NSLayoutConstraint
+                                      constraintsWithVisualFormat:@"V:|-5-[retweetHeaderImageView]"
+                                      options:NSLayoutFormatDirectionLeadingToTrailing
+                                      metrics:nil
+                                      views:NSDictionaryOfVariableBindings(retweetHeaderImageView)]];
+    // add vertical constraints to favoriteImageView
+    [self.contentView addConstraints:[NSLayoutConstraint
+                                      constraintsWithVisualFormat:@"V:|-5-[retweetHeaderLabel]"
+                                      options:NSLayoutFormatDirectionLeadingToTrailing
+                                      metrics:nil
+                                      views:NSDictionaryOfVariableBindings(retweetHeaderLabel)]];
+    
+    [self.contentView addConstraints:[NSLayoutConstraint
+                                      constraintsWithVisualFormat:@"H:|-30-[retweetHeaderImageView]-4-[retweetHeaderLabel]"
+                                      options:NSLayoutFormatDirectionLeadingToTrailing
+                                      metrics:nil
+                                      views:NSDictionaryOfVariableBindings(retweetHeaderImageView, retweetHeaderLabel)]];
+    
+    return 5 + 16;
+}
+
+
 
 
 #pragma UIResponder methods
 
 - (void)tweetActions:(UITapGestureRecognizer *)recognizer
 {
-    int height = [TweetCell defaultContentFrame].origin.y + [_content getLayoutHeight] + 25;
+    int yPositionOfContent;
+    if (_tweet.retweeted) {
+        yPositionOfContent = [TweetCell defaultContentFrameWithRetweetHeader].origin.y;
+    } else {
+        yPositionOfContent = [TweetCell defaultContentFrame].origin.y;
+    }
+    int height = yPositionOfContent + [_content getLayoutHeight] + 25;
     CGPoint p = [recognizer locationInView:self.contentView];
     
     CGRect replyAction = CGRectMake(40, (height-5-16), 16, 16);

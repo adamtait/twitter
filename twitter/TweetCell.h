@@ -13,8 +13,9 @@
 
     // public static methods
     + (CGRect)defaultContentFrame;
+    + (CGRect)defaultContentFrameWithRetweetHeader;
     + (UILabel *)setupLabelWithFont:(UIFont *)font textColor:(UIColor *)textColor;
-    + (UIImageView *)setupImageViewWithFrame:(CGRect)frame;
+    + (UIImageView *)setupImageView;
     + (void)loadImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView;
 
     // public methods

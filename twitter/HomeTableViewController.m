@@ -98,11 +98,11 @@ static NSString * const cellIdentifier = @"TweetCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // cell re-use becomes a problem some cells are retweet cells, and others are not
+    // it's easier to just re-create the cell everytime (yes, this is a hack)
     static NSString *CellIdentifier = @"Cell";
-    TweetCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[TweetCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
+    TweetCell *cell = [[TweetCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+
     if (indexPath.row > ([_tweets count] - 10)) {
         // to handle infinite scrolling, let's load more tweets
         int indexOfLastLoadedTweet = [_tweets count] - 1;
@@ -187,7 +187,11 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     Tweet *tweet = _tweets[indexPath.row];
     [fakeTextView updateContentWithString:tweet.text];    // setAttributedText:[[NSAttributedString alloc] initWithString:[_todoList getStringForIndex:indexPath.row]]
     
-    return [TweetCell defaultContentFrame].origin.y + [fakeTextView getLayoutHeight] + 25;
+    if (tweet.retweeted) {
+        return (5 + 16) + [TweetCell defaultContentFrame].origin.y + [fakeTextView getLayoutHeight] + 25;
+    } else {
+        return [TweetCell defaultContentFrame].origin.y + [fakeTextView getLayoutHeight] + 25;
+    }
 }
 
 

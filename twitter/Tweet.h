@@ -23,6 +23,7 @@
     @property (nonatomic, strong, readonly) NSString *idStr;
     @property BOOL favorited;
     @property BOOL retweeted;
+    @property (nonatomic, strong, readonly) NSString *originatorUserhandle;
 
     // public methods
     - (id)initWithString:(NSString *)status;

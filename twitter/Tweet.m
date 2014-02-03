@@ -12,6 +12,9 @@
 
 @interface Tweet ()
 
+    // private properties
+    @property (nonatomic, strong, readonly) NSDictionary *retweetedStatus;
+
     // private methods
     - (NSDictionary *)userDict;
 
@@ -43,7 +46,11 @@
 #pragma public properties
 
 - (NSString *)text {
-    return [self.data valueForKey:@"text"];
+    if (_retweeted) {
+        return [self retweetedStatus][@"text"];
+    } else {
+        return [self.data valueForKey:@"text"];
+    }
 }
 
 - (NSString *)username {
@@ -60,6 +67,19 @@
 
 - (NSString *)idStr {
     return self.data[@"id_str"];
+}
+
+- (NSDictionary *)retweetedStatus {
+    return self.data[@"retweeted_status"];
+}
+
+- (NSString *)originatorUserhandle {
+    if (_retweeted) {
+        NSDictionary *retweetedUserDictionary = [self retweetedStatus][@"user"];
+        return [NSString stringWithFormat:@"@%@", retweetedUserDictionary[@"screen_name"]];
+    } else {
+        return @"";
+    }
 }
 
 
