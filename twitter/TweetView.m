@@ -115,6 +115,9 @@
     }
     [self addSubview:[_content getTextView]];
     [self sendSubviewToBack:[_content getTextView]];
+    
+    NSLog(@"updating TweetTextView with new content / %@ /", tweet.text);
+    
     [_content updateContentWithString:tweet.text];
 }
 

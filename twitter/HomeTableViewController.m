@@ -8,6 +8,7 @@
 
 #import "HomeTableViewController.h"
 #import "NewTweetViewController.h"
+#import "TweetDetailViewController.h"
 #import "Color.h"
 #import "TweetCell.h"
 #import "User.h"
@@ -25,11 +26,12 @@ static NSString * const cellIdentifier = @"TweetCell";
     @property (nonatomic, strong) NSMutableArray *tweets;
 
     // private methods
-- (void)reload:(id)sender;
+    - (void)reload:(id)sender;
     - (void)signOut:(id)sender;
     - (void)newTweet:(id)sender;
     - (void)afterNewTweet:(id)sender;
     - (void)replyToTweet:(id)sender;
+    - (void)didSelectTweet:(id)sender;
 
 @end
 
@@ -66,10 +68,8 @@ static NSString * const cellIdentifier = @"TweetCell";
     self.navigationItem.title = @"home";
     
     [self.navigationController.navigationBar setBarTintColor:[Color twitterBlue]];
-    //    navigationController.navigationBar.barTintColor = [Color twitterBlue];
     self.navigationController.navigationBar.tintColor = [Color fontWhite];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [Color fontWhite]}];
-//    self.navigationController.navigationBar.translucent = NO;
     
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"sign out" style:UIBarButtonItemStylePlain target:self action:@selector(signOut:)];
     [self.navigationItem setLeftBarButtonItem:leftBarButton];
@@ -78,6 +78,7 @@ static NSString * const cellIdentifier = @"TweetCell";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterNewTweet:) name:@"newTweet" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(replyToTweet:) name:@"replyToTweet" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSelectTweet:) name:@"tweetWasSelected" object:nil];
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(reload:) forControlEvents:UIControlEventValueChanged];
@@ -162,23 +163,20 @@ static NSString * const cellIdentifier = @"TweetCell";
 }
 */
 
-/*
+
 #pragma mark - Table view delegate
 
-// In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) didSelectTweet:(id)sender
 {
-    // Navigation logic may go here, for example:
-    // Create the next view controller.
-    <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-
-    // Pass the selected object to the new view controller.
+    NSNotification *notification = (NSNotification *)sender;
+    Tweet *tweet = notification.object;
     
-    // Push the view controller.
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    NSLog(@"about to load Detail controller with text / %@ /", tweet.text);
+    
+    TweetDetailViewController *tweetDetailViewController = [[TweetDetailViewController alloc] initWithTweet:tweet];
+    [self.navigationController pushViewController:tweetDetailViewController animated:YES];
 }
- 
- */
+
 
 
 - (CGFloat)tableView:(UITableView *)tableView

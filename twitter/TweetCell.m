@@ -86,7 +86,7 @@
     
     if (CGRectContainsPoint(replyAction, p))
     {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"replyToTweet" object:self.tweet];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"replyToTweet" object:_tweet];
     }
     else if (CGRectContainsPoint(retweetAction, p))
     {
@@ -99,6 +99,8 @@
     {
         [_view setFavorited:!_view.hasBeenFavorited];
         [self.tweet toggleFavorite];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"tweetWasSelected" object:self.tweet];
     }
 }
 
