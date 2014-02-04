@@ -219,7 +219,7 @@
                                                      attribute:NSLayoutAttributeTop multiplier:1.0 constant:(verticalBuffer - 2)]];
     // add constraints separating all labels & images
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"H:|-7-[profileImageView]-7-[usernameLabel]-5-[userhandleLabel]-(>=5)-[dateLabel]-5-|"
+                          constraintsWithVisualFormat:@"H:|-7-[profileImageView]-7-[usernameLabel]-5-[userhandleLabel(>=5)]-(>=5)-[dateLabel]-5-|"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
                           views:NSDictionaryOfVariableBindings(profileImageView, usernameLabel, userhandleLabel, dateLabel)]];
