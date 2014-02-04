@@ -6,6 +6,20 @@ a simple twitter client for iOS
 
 ## Usage
 
+When you first open the app, you should sign in with your Twitter account using OAuth.
+
+![splash screen](https://dl.dropboxusercontent.com/u/3992486/app_screenshots/twitter/sign_in.png)
+![Twitter OAuth page](https://dl.dropboxusercontent.com/u/3992486/app_screenshots/twitter/twitter_oauth_page.png)
+
+check out your current tweet stream
+
+![home view controller](https://dl.dropboxusercontent.com/u/3992486/app_screenshots/twitter/home_view_controller.png)
+
+reply to a tweet or add a new one
+
+![reply to a tweet](https://dl.dropboxusercontent.com/u/3992486/app_screenshots/twitter/reply_tweet.png)
+
+
 
 ## Architecture Decision Records (ADRs)
 
@@ -29,3 +43,11 @@ In using NSLayoutConstraints, I started by using [NSLayoutConstraint constraintW
 
 Not using the UITableView's reusable cells was a hack to get around all the issues that arose when reusing a cell with a different layout. If a cell that was built with a retweet header got re-used for a cell without a retweet, the old retweet details would remain and the height calculations would be off. By fixing the mixture of hard coded frames & constraints (discussed above in NSLayoutConstraints), and adding a `[TweetCell clearUnused subviews]` this problem could have been resolved.
 The scrolling in the app feels slow and jittery without the reusable cells.
+
+
+#### OAuth1 & AFNetworking
+
+
+#### handling touch events
+
+
