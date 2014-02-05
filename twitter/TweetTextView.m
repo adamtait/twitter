@@ -35,25 +35,15 @@
 
 #pragma public instance methods
 
-- (id)initWithFrame:(CGRect)frame
+- (id)init
 {
-    _container = [[NSTextContainer alloc] initWithSize:CGSizeMake(frame.size.width, frame.size.height)];
-    _container.lineBreakMode = [TweetTextView defaultLineBreakMode];
     self = [super init];
-    
     if (self) {
-        _layout = [[NSLayoutManager alloc] init];
-        [_layout addTextContainer:_container];
-        _storage = [[NSTextStorage alloc] init];
-        [_storage addLayoutManager:_layout];
-        
-        _textView = [[UITextView alloc] initWithFrame:frame textContainer:_container];
+        _textView = [[UITextView alloc] init];
         
         _textView.font = [TweetTextView defaultFont];
         _textView.textContainerInset = UIEdgeInsetsZero;
-        
         _textView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-        
         _textView.editable = NO;
     }
     return self;
@@ -66,23 +56,14 @@
 
 - (void)updateContentWithString:(NSString *)content
 {
-    _textView.attributedText = [[NSAttributedString alloc] initWithString:content ];
-    
-    NSRange range = NSMakeRange(0, [content length]);
-    [_storage addAttribute:NSFontAttributeName value:[TweetTextView defaultFont] range:range];
-    
+    _textView.attributedText = [[NSAttributedString alloc] initWithString:content];
 }
 
-- (int)getLayoutHeight
+- (int)getLayoutHeightForWidth:(CGFloat)width
 {
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.lineBreakMode = [TweetTextView defaultLineBreakMode];
-    CGRect textRect = [[self getTextView].text boundingRectWithSize:CGSizeMake([TweetView defaultContentFrame].size.width, MAXFLOAT)
-                                                                    options:(NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin)
-                                                                 attributes:@{NSFontAttributeName:[TweetTextView defaultFont],
-                                                                              NSParagraphStyleAttributeName:paragraphStyle}
-                                                                    context:nil];
-    return textRect.size.height;
+    
+    CGSize size = [_textView sizeThatFits:CGSizeMake(width, FLT_MAX)];
+    return size.height;
 }
 
 @end

@@ -25,10 +25,7 @@
     @property BOOL hasBeenRetweeted;
 
     // public methods
-    - (void)initTwitterActionImageViewsWithSuperView:(UIView *)superview;
     - (void)updateContentWithTweet:(Tweet *)tweet;
-    - (void)addConstraintsToFooterLineWithSuperView:(UIView *)superView;
-    - (void)addConstraintsToFooterLineWithSuperView:(UIView *)superView fixedHeight:(int)fixedHeight;
     - (void)setFavorited:(BOOL)favorited;
     - (void)setRetweeted;
 

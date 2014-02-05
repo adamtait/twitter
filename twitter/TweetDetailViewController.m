@@ -53,9 +53,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [_tweetView initTwitterActionImageViewsWithSuperView:self.view];
     [_tweetView updateContentWithTweet:_tweet];
-    [_tweetView addConstraintsToFooterLineWithSuperView:self.view fixedHeight:_heightOfFooterLine];
     [self.view sendSubviewToBack:_tweetView];
 }
 

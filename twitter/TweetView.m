@@ -25,8 +25,12 @@
     @property (nonatomic, strong) UIImageView *retweetHeaderImageView;
     @property (nonatomic, strong) UILabel *retweetHeaderLabel;
 
+    @property (nonatomic, strong) NSLayoutConstraint *tweetTextViewHeightConstraint;
+
+
     // handling constraints
     - (void)addConstraintsToHeaderLineWithHeightOffset:(int)heightOffset;
+    - (void)addConstraintsToTweetTextView;
     - (int)addConstraintsToRetweetHeaderLine;
 
 @end
@@ -61,6 +65,10 @@
         // remove all subviews from the UITableViewCell contentView
         [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
         
+        // add TweetTextView and order it at the back
+        _content = [[TweetTextView alloc] init];
+        [self addSubview:[_content getTextView]];
+        
         // add profileImage & username & userhandle to contentView
         _profileImageView = [TweetView setupImageView];
         _usernameLabel = [TweetView setupLabelWithFont:[UIFont boldSystemFontOfSize:14.0] textColor:[Color fontBlack]];
@@ -70,19 +78,20 @@
         [self addSubview:_usernameLabel];
         [self addSubview:_userhandleLabel];
         [self addSubview:_dateLabel];
+        
+        // add tweet action UIImageViews
+        _replyImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"reply.png"]];
+        _retweetImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"retweet.png"]];
+        _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite.png"]];
+        [self addSubview:_replyImageView];
+        [self addSubview:_retweetImageView];
+        [self addSubview:_favoriteImageView];
+        
+        // add constraints
+        [self addConstraintsToTweetTextView];
+        [self addConstraintsToFooterLine];
     }
     return self;
-}
-
-- (void)initTwitterActionImageViewsWithSuperView:(UIView *)superview
-{
-    // add the twitter action images to superview
-    _replyImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"reply.png"]];
-    _retweetImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"retweet.png"]];
-    _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite.png"]];
-    [superview addSubview:_replyImageView];
-    [superview addSubview:_retweetImageView];
-    [superview addSubview:_favoriteImageView];
 }
 
 - (void)updateContentWithTweet:(Tweet *)tweet
@@ -106,19 +115,13 @@
         
         int retweetHeaderHeight = [self addConstraintsToRetweetHeaderLine];
         [self addConstraintsToHeaderLineWithHeightOffset:retweetHeaderHeight];
-        _content = [[TweetTextView alloc] initWithFrame:[TweetView defaultContentFrameWithRetweetHeader]];
     }
     else
     {
         [self addConstraintsToHeaderLineWithHeightOffset:0];
-        _content = [[TweetTextView alloc] initWithFrame:[TweetView defaultContentFrame]];
     }
-    [self addSubview:[_content getTextView]];
-    [self sendSubviewToBack:[_content getTextView]];
-    
-    NSLog(@"updating TweetTextView with new content / %@ /", tweet.text);
-    
     [_content updateContentWithString:tweet.text];
+    _tweetTextViewHeightConstraint.constant = [_content getLayoutHeightForWidth:275.0];
 }
 
 
@@ -218,16 +221,56 @@
                                                      relatedBy:NSLayoutRelationEqual toItem:dateLabel
                                                      attribute:NSLayoutAttributeTop multiplier:1.0 constant:(verticalBuffer - 2)]];
     // add constraints separating all labels & images
+    NSLayoutConstraint *userhandleLabelWidthConstraint = [NSLayoutConstraint constraintWithItem:userhandleLabel
+                                                                  attribute:NSLayoutAttributeWidth
+                                                                  relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                     toItem:nil
+                                                                  attribute:NSLayoutAttributeNotAnAttribute
+                                                                 multiplier:1
+                                                                   constant:20];
+    userhandleLabelWidthConstraint.priority = UILayoutPriorityDefaultLow;
+    [self addConstraint:userhandleLabelWidthConstraint];
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"H:|-7-[profileImageView]-7-[usernameLabel]-5-[userhandleLabel(>=5)]-(>=5)-[dateLabel]-5-|"
+                          constraintsWithVisualFormat:@"H:|-7-[profileImageView]-7-[usernameLabel]-5-[userhandleLabel]-(>=5)-[dateLabel]-5-|"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
                           views:NSDictionaryOfVariableBindings(profileImageView, usernameLabel, userhandleLabel, dateLabel)]];
 }
 
 
-- (void)addConstraintsToFooterLineWithSuperView:(UIView *)superView
+- (void)addConstraintsToTweetTextView
 {
+    UITextView *tweetTextView = [_content getTextView];
+    UILabel *usernameLabel = _userhandleLabel;
+    
+    tweetTextView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"H:|-40-[tweetTextView]-5-|"
+                          options:NSLayoutFormatDirectionLeftToRight
+                          metrics:nil
+                          views:NSDictionaryOfVariableBindings(tweetTextView)]];
+    
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"V:[usernameLabel]-10-[tweetTextView]"
+                          options:NSLayoutFormatDirectionLeftToRight
+                          metrics:nil
+                          views:NSDictionaryOfVariableBindings(usernameLabel, tweetTextView)]];
+    
+    _tweetTextViewHeightConstraint = [NSLayoutConstraint constraintWithItem:tweetTextView
+                                                                  attribute:NSLayoutAttributeHeight
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:nil
+                                                                  attribute:NSLayoutAttributeNotAnAttribute
+                                                                 multiplier:1
+                                                                   constant:0];
+    [self addConstraint:_tweetTextViewHeightConstraint];
+}
+
+- (void)addConstraintsToFooterLine
+{
+    UITextView *tweetTextView = [_content getTextView];
+    
     UIImageView *replyImageView = _replyImageView;
     UIImageView *retweetImageView = _retweetImageView;
     UIImageView *favoriteImageView = _favoriteImageView;
@@ -237,67 +280,30 @@
     favoriteImageView.translatesAutoresizingMaskIntoConstraints = NO;
     
     // add vertical constraints to replyImageView
-    [superView addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:[replyImageView]-5-|"
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"V:[tweetTextView]-[replyImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
-                          views:NSDictionaryOfVariableBindings(replyImageView)]];
+                          views:NSDictionaryOfVariableBindings(tweetTextView, replyImageView)]];
     // add vertical constraints to retweetImageView
-    [superView addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:[retweetImageView]-5-|"
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"V:[tweetTextView]-[retweetImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
-                          views:NSDictionaryOfVariableBindings(retweetImageView)]];
+                          views:NSDictionaryOfVariableBindings(tweetTextView, retweetImageView)]];
     // add vertical constraints to favoriteImageView
-    [superView addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:[favoriteImageView]-5-|"
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"V:[tweetTextView]-[favoriteImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
-                          views:NSDictionaryOfVariableBindings(favoriteImageView)]];
+                          views:NSDictionaryOfVariableBindings(tweetTextView, favoriteImageView)]];
     
-    [superView addConstraints:[NSLayoutConstraint
+    [self addConstraints:[NSLayoutConstraint
                           constraintsWithVisualFormat:@"H:|-40-[replyImageView]-25-[retweetImageView]-25-[favoriteImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
                           views:NSDictionaryOfVariableBindings(replyImageView, retweetImageView, favoriteImageView)]];
     
-}
-
-
-- (void)addConstraintsToFooterLineWithSuperView:(UIView *)superView fixedHeight:(int)fixedHeight
-{
-    UIImageView *replyImageView = _replyImageView;
-    UIImageView *retweetImageView = _retweetImageView;
-    UIImageView *favoriteImageView = _favoriteImageView;
-    
-    replyImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    retweetImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    favoriteImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    // add vertical constraints to replyImageView
-    [superView addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%d-[replyImageView]", fixedHeight]
-                               options:NSLayoutFormatDirectionLeadingToTrailing
-                               metrics:nil
-                               views:NSDictionaryOfVariableBindings(replyImageView)]];
-    // add vertical constraints to retweetImageView
-    [superView addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%d-[retweetImageView]", fixedHeight]
-                               options:NSLayoutFormatDirectionLeadingToTrailing
-                               metrics:nil
-                               views:NSDictionaryOfVariableBindings(retweetImageView)]];
-    // add vertical constraints to favoriteImageView
-    [superView addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%d-[favoriteImageView]", fixedHeight]
-                               options:NSLayoutFormatDirectionLeadingToTrailing
-                               metrics:nil
-                               views:NSDictionaryOfVariableBindings(favoriteImageView)]];
-    
-    [superView addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:@"H:|-40-[replyImageView]-25-[retweetImageView]-25-[favoriteImageView]"
-                               options:NSLayoutFormatDirectionLeadingToTrailing
-                               metrics:nil
-                               views:NSDictionaryOfVariableBindings(replyImageView, retweetImageView, favoriteImageView)]];
 }
 
 - (int)addConstraintsToRetweetHeaderLine

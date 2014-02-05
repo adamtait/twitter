@@ -42,7 +42,6 @@
         
         _view = [[TweetView alloc] initWithFrame:self.contentView.frame];
         [self.contentView addSubview:_view];
-        [_view initTwitterActionImageViewsWithSuperView:self.contentView];
         
         // add gesture recognizers
         [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tweetActions:)]];
@@ -53,8 +52,6 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 
@@ -62,7 +59,6 @@
 {
     _tweet = tweet;
     [_view updateContentWithTweet:tweet];
-    [_view addConstraintsToFooterLineWithSuperView:self.contentView];
 }
 
 
@@ -77,7 +73,7 @@
     } else {
         yPositionOfContent = [TweetView defaultContentFrame].origin.y;
     }
-    int height = yPositionOfContent + [_view.content getLayoutHeight] + 25;
+    int height = yPositionOfContent + [_view.content getLayoutHeightForWidth:275.0] + 25;
     CGPoint p = [recognizer locationInView:self];
     
     CGRect replyAction = CGRectMake(40, (height-5-16), 16, 16);

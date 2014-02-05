@@ -20,6 +20,6 @@
     // accessors
     - (UITextView *)getTextView;
     - (void)updateContentWithString:(NSString *)content;
-    - (int)getLayoutHeight;
+    - (int)getLayoutHeightForWidth:(CGFloat)width;
 
 @end
