@@ -43,8 +43,8 @@
         
         _textView.font = [TweetTextView defaultFont];
         _textView.textContainerInset = UIEdgeInsetsZero;
-        _textView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         _textView.editable = NO;
+        [_textView setUserInteractionEnabled:NO];
     }
     return self;
 }

@@ -14,9 +14,6 @@
     + (UIFont *)defaultFont;
     + (NSLineBreakMode)defaultLineBreakMode;
 
-    // public initializers
-    - (id)initWithFrame:(CGRect)frame;
-
     // accessors
     - (UITextView *)getTextView;
     - (void)updateContentWithString:(NSString *)content;

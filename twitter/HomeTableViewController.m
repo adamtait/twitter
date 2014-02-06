@@ -41,8 +41,6 @@ static NSString * const cellIdentifier = @"TweetCell";
 {
     self = [super initWithStyle:style];
     if (self) {
-        // Custom initialization
-        
         [self reload:nil];
     }
     return self;
@@ -66,11 +64,11 @@ static NSString * const cellIdentifier = @"TweetCell";
     
     // setup navigation bar
     self.navigationItem.title = @"home";
-    
     [self.navigationController.navigationBar setBarTintColor:[Color twitterBlue]];
     self.navigationController.navigationBar.tintColor = [Color fontWhite];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [Color fontWhite]}];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[Color fontWhite]}];
     
+    // setup navigation bar items
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"sign out" style:UIBarButtonItemStylePlain target:self action:@selector(signOut:)];
     [self.navigationItem setLeftBarButtonItem:leftBarButton];
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"new" style:UIBarButtonItemStylePlain target:self action:@selector(newTweet:)];
@@ -107,7 +105,7 @@ static NSString * const cellIdentifier = @"TweetCell";
 
     if (indexPath.row > ([_tweets count] - 10)) {
         // to handle infinite scrolling, let's load more tweets
-        int indexOfLastLoadedTweet = [_tweets count] - 1;
+        int indexOfLastLoadedTweet = (int)[_tweets count] - 1;
         Tweet *lastLoadedTweet = _tweets[indexOfLastLoadedTweet];
         [[TwitterClient instance] homeTimelineWithCount:50 sinceId:nil maxId:lastLoadedTweet.idStr
                                                 success:^(AFHTTPRequestOperation *operation, id response) {
@@ -124,60 +122,18 @@ static NSString * const cellIdentifier = @"TweetCell";
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 
 #pragma mark - Table view delegate
 
-- (void) didSelectTweet:(id)sender
+- (NSIndexPath *)tableView:(UITableView *)tableView
+willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSNotification *notification = (NSNotification *)sender;
-    Tweet *tweet = notification.object;
-    
-    NSLog(@"about to load Detail controller with text / %@ /", tweet.text);
-    
+    Tweet *tweet = _tweets[indexPath.row];
     TweetDetailViewController *tweetDetailViewController = [[TweetDetailViewController alloc] initWithTweet:tweet];
+    
     [self.navigationController pushViewController:tweetDetailViewController animated:YES];
+    return indexPath;
 }
-
-
 
 - (CGFloat)tableView:(UITableView *)tableView
 heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -187,9 +143,9 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     [fakeTextView updateContentWithString:tweet.text];    // setAttributedText:[[NSAttributedString alloc] initWithString:[_todoList getStringForIndex:indexPath.row]]
     
     if (tweet.retweeted) {
-        return (5 + 16) + [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 55;
+        return (5 + 16) + [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 35;
     } else {
-        return [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 55;
+        return [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 35;
     }
 }
 
