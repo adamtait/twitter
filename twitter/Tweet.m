@@ -54,15 +54,29 @@
 }
 
 - (NSString *)username {
-    return [[self userDict] valueForKey:@"name"];
+    if (_retweeted) {
+        return [self retweetedStatus][@"user"][@"name"];
+    } else {
+        return [[self userDict] valueForKey:@"name"];
+    }
 }
 
 - (NSString *)userhandle {
-    return [NSString stringWithFormat:@"@%@", [[self userDict] valueForKeyPath:@"screen_name"]];
+    NSString *screenName;
+    if (_retweeted) {
+        screenName = [self retweetedStatus][@"user"][@"screen_name"];
+    } else {
+        screenName = [[self userDict] valueForKeyPath:@"screen_name"];
+    }
+    return [NSString stringWithFormat:@"@%@", screenName];
 }
 
 - (NSString *)profileImageURL {
-    return [[self userDict] valueForKey:@"profile_image_url"];
+    if (_retweeted) {
+        return [self retweetedStatus][@"user"][@"profile_image_url"];
+    } else {
+        return [[self userDict] valueForKey:@"profile_image_url"];
+    }
 }
 
 - (NSString *)idStr {
@@ -73,10 +87,9 @@
     return self.data[@"retweeted_status"];
 }
 
-- (NSString *)originatorUserhandle {
+- (NSString *)retweeterUserhandle {
     if (_retweeted) {
-        NSDictionary *retweetedUserDictionary = [self retweetedStatus][@"user"];
-        return [NSString stringWithFormat:@"@%@", retweetedUserDictionary[@"screen_name"]];
+        return [NSString stringWithFormat:@"@%@", [[self userDict] valueForKeyPath:@"screen_name"]];
     } else {
         return @"";
     }

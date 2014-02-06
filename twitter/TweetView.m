@@ -114,13 +114,13 @@
 - (void)updateContentWithTweet:(Tweet *)tweet
 {
     _tweet = tweet;
+    
+    // update subviews with tweet information
     [TweetView loadImageFromUrl:tweet.profileImageURL imageView:_profileImageView];
     _usernameLabel.text = tweet.username;
     [_usernameLabel sizeToFit];
-    
     _userhandleLabel.text = tweet.userhandle;
     _dateLabel.text = tweet.createdAt;
-    
     [self setFavorited:tweet.favorited];
     
     if (tweet.retweeted)
@@ -128,7 +128,7 @@
         _retweetHeaderImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"retweet.png"]];
         [self addSubview:_retweetHeaderImageView];
         _retweetHeaderLabel = [TweetView setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
-        _retweetHeaderLabel.text = tweet.originatorUserhandle;
+        _retweetHeaderLabel.text = tweet.retweeterUserhandle;
         [self addSubview:_retweetHeaderLabel];
         
         int retweetHeaderHeight = [self addConstraintsToRetweetHeaderLine];
@@ -138,7 +138,10 @@
     {
         [self addConstraintsToHeaderLineWithHeightOffset:0];
     }
+    
+    // update TextView content
     [_content updateContentWithString:tweet.text];
+    [self bringSubviewToFront:[_content getTextView]];
     
     // update height constraint on the TweetTextView
     _tweetTextViewHeightConstraint.constant = [_content getLayoutHeightForWidth:275.0];
