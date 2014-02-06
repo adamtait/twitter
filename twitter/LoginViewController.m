@@ -10,6 +10,7 @@
 #import "Color.h"
 #import "TwitterClient.h"
 #import "User.h"
+#import "SVProgressHUD.h"
 
 @interface LoginViewController ()
 
@@ -18,8 +19,6 @@
 
     // private methods
     - (IBAction)onLoginButton:(id)sender;
-
-    - (void)onError;
 
 @end
 
@@ -57,16 +56,10 @@
                                                success:^(AFOAuth1Token *accessToken, id responseObject) {
                                                    [[TwitterClient instance] currentUserWithSuccess:^(AFHTTPRequestOperation *operation, id response) {
                                                        [User setCurrentUser:[[User alloc] initWithDictionary:response]];
-                                                   } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                       [self onError];
                                                    }];
                                                } failure:^(NSError *error) {
-                                                   [self onError];
+                                                   [SVProgressHUD showErrorWithStatus:@"network error"];
                                                }];
-}
-
-- (void)onError {
-    [[[UIAlertView alloc] initWithTitle:@"Oops!" message:@"Couldn't log in with Twitter, please try again!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 
 @end

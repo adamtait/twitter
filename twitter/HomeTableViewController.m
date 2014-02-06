@@ -16,6 +16,7 @@
 #import "Tweet.h"
 #import "TweetTextView.h"
 #import "TweetView.h"
+#import "SVProgressHUD.h"
 
 
 static NSString * const cellIdentifier = @"TweetCell";
@@ -56,7 +57,7 @@ static NSString * const cellIdentifier = @"TweetCell";
     // setup the UITableView delegate to be this UITableViewController
     [self.tableView setDelegate:self];
     
-    // register the TodoCell class for the reuseIdentifier
+    // register the TweetCell class for the reuseIdentifier
     [[self tableView] registerClass:[TweetCell class] forCellReuseIdentifier:cellIdentifier];
     
     // setup navigation bar
@@ -122,7 +123,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TweetTextView *fakeTextView = [[TweetTextView alloc] init];
     Tweet *tweet = _tweets[indexPath.row];
-    [fakeTextView updateContentWithString:tweet.text];    // setAttributedText:[[NSAttributedString alloc] initWithString:[_todoList getStringForIndex:indexPath.row]]
+    [fakeTextView updateContentWithString:tweet.text];
     
     if (tweet.retweeted) {
         return (5 + 16) + [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 35;
@@ -136,15 +137,20 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)reload:(id)sender
 {
-    NSLog(@"attempting to reload all tweet data");
     [[TwitterClient instance] homeTimelineWithCount:50 sinceId:nil maxId:nil
                                             success:^(AFHTTPRequestOperation *operation, id response) {
-        self.tweets = [Tweet tweetsWithArray:response];
-        [self.tableView reloadData];
-        [self.refreshControl endRefreshing];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        // TODO handle network error
-    }];
+                                                
+                                                self.tweets = [Tweet tweetsWithArray:response];
+                                                [self.tableView reloadData];
+                                                [self.refreshControl endRefreshing];
+                                                
+                                            }  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                
+                                                [self.refreshControl endRefreshing];
+                                                _tweetLoadingStarted = NO;
+                                                [SVProgressHUD showErrorWithStatus:@"network error"];
+                                                
+                                            }];
 }
 
 
@@ -193,8 +199,10 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
                                                     _tweetLoadingStarted = NO;
                                                     
                                                 } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                    // TODO handle network error
+                                                    
                                                     _tweetLoadingStarted = NO;
+                                                    [SVProgressHUD showErrorWithStatus:@"network error"];
+                                                    
                                                 }];
     }
 }

@@ -8,6 +8,7 @@
 
 #import "TwitterClient.h"
 #import "AFNetworking.h"
+#import "SVProgressHUD.h"
 
 #define TWITTER_BASE_URL [NSURL URLWithString:@"https://api.twitter.com/"]
 #define TWITTER_CONSUMER_KEY @"I6DFKpf9tNscxPhdLDkYsA"
@@ -16,6 +17,8 @@
 static NSString * const kAccessTokenKey = @"kAccessTokenKey";
 
 @implementation TwitterClient
+
+#pragma mark - Public static methods
 
 + (TwitterClient *)instance {
     static dispatch_once_t once;
@@ -27,6 +30,16 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
     
     return instance;
 }
+
++ (void (^)(AFHTTPRequestOperation *operation, NSError *error))networkFailureBlock
+{
+    return ^(AFHTTPRequestOperation *operation, NSError *error){
+        [SVProgressHUD showErrorWithStatus:@"network error"];
+    };
+}
+
+
+#pragma mark - Public instance methods
 
 - (id)initWithBaseURL:(NSURL *)url key:(NSString *)key secret:(NSString *)secret {
     self = [super initWithBaseURL:TWITTER_BASE_URL key:TWITTER_CONSUMER_KEY secret:TWITTER_CONSUMER_SECRET];
@@ -50,9 +63,11 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
     [super authorizeUsingOAuthWithRequestTokenPath:@"oauth/request_token" userAuthorizationPath:@"oauth/authorize" callbackURL:callbackUrl accessTokenPath:@"oauth/access_token" accessMethod:@"POST" scope:nil success:success failure:failure];
 }
 
-- (void)currentUserWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id response))success
-                       failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
-    [self getPath:@"1.1/account/verify_credentials.json" parameters:nil success:success failure:failure];
+- (void)currentUserWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id response))success{
+    [self getPath:@"1.1/account/verify_credentials.json"
+       parameters:nil
+          success:success
+          failure:[TwitterClient networkFailureBlock]];
 }
 
 #pragma mark - Statuses API
@@ -61,7 +76,20 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
                       sinceId:(NSString *)sinceId
                         maxId:(NSString *)maxId
                       success:(void (^)(AFHTTPRequestOperation *operation, id response))success
-                      failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
+{
+    [self homeTimelineWithCount:count
+                        sinceId:sinceId
+                          maxId:maxId
+                        success:success
+                        failure:[TwitterClient networkFailureBlock]];
+}
+
+- (void)homeTimelineWithCount:(int)count
+                      sinceId:(NSString *)sinceId
+                        maxId:(NSString *)maxId
+                      success:(void (^)(AFHTTPRequestOperation *operation, id response))success
+                      failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+{
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"count": @(count)}];
     if (sinceId) {
         [params setObject:sinceId forKey:@"since_id"];
@@ -70,7 +98,10 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
         [params setObject:maxId forKey:@"max_id"];
     }
     NSLog(@"sending timeline request to twitter with params / %@ /", params);
-    [self getPath:@"1.1/statuses/home_timeline.json" parameters:params success:success failure:failure];
+    [self getPath:@"1.1/statuses/home_timeline.json"
+       parameters:params
+          success:success
+          failure:failure];
 }
 
 - (void)createRetweet:(NSString *)tweetId
@@ -79,9 +110,7 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
     [self postPath:path parameters:[NSMutableDictionary dictionaryWithDictionary:@{@"id": tweetId}]
            success:^(AFHTTPRequestOperation *operation, id response) {
                // Do nothing
-           } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-               // Do nothing
-           }];
+           } failure:[TwitterClient networkFailureBlock]];
 }
 
 - (void)createFavorite:(NSString *)tweetId
@@ -89,9 +118,7 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
     [self postPath:@"1.1/favorites/create.json" parameters:[NSMutableDictionary dictionaryWithDictionary:@{@"id": tweetId}]
           success:^(AFHTTPRequestOperation *operation, id response) {
               // Do nothing
-          } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              // Do nothing
-          }];
+          } failure:[TwitterClient networkFailureBlock]];
 }
 
 - (void)deleteFavorite:(NSString *)tweetId
@@ -100,9 +127,7 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
     [self postPath:@"1.1/favorites/destroy.json" parameters:params
            success:^(AFHTTPRequestOperation *operation, id response) {
                // Do nothing
-           } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-               // Do nothing
-           }];
+           } failure:[TwitterClient networkFailureBlock]];
 }
 
 - (void)updateStatusWithString:(NSString *)status
@@ -111,9 +136,7 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
     [self postPath:@"1.1/statuses/update.json" parameters:params
            success:^(AFHTTPRequestOperation *operation, id response) {
                // Do nothing
-           } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-               // Do nothing
-           }];
+           } failure:[TwitterClient networkFailureBlock]];
 }
 
 

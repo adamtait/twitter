@@ -11,15 +11,21 @@
 @interface TwitterClient : AFOAuth1Client
 
 + (TwitterClient *)instance;
++ (void (^)(AFHTTPRequestOperation *operation, NSError *error))networkFailureBlock;
 
 // Users API
 
-- (void)authorizeWithCallbackUrl:(NSURL *)callbackUrl success:(void (^)(AFOAuth1Token *accessToken, id responseObject))success failure:(void (^)(NSError *error))failure;
+- (void)authorizeWithCallbackUrl:(NSURL *)callbackUrl success:(void (^)(AFOAuth1Token *accessToken, id responseObject))success
+                         failure:(void (^)(NSError *error))failure;
 
-- (void)currentUserWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id response))success
-                       failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+- (void)currentUserWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id response))success;
 
 // Statuses API
+
+- (void)homeTimelineWithCount:(int)count
+                      sinceId:(NSString *)sinceId
+                        maxId:(NSString *)maxId
+                      success:(void (^)(AFHTTPRequestOperation *operation, id response))success;
 
 - (void)homeTimelineWithCount:(int)count
                       sinceId:(NSString *)sinceId

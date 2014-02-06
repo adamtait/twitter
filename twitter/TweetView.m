@@ -11,6 +11,7 @@
 #import "AFImageRequestOperation.h"
 #import "TweetView.h"
 #import "Color.h"
+#import "SVProgressHUD.h"
 
 @interface TweetView ()
 
@@ -199,7 +200,7 @@
                                                               [imageView setImage:image];
                                                           }
                                                           failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                              NSLog(@"%@", [error localizedDescription]);
+                                                              [SVProgressHUD showErrorWithStatus:@"network error"];
                                                           }];
     [operation start];
 }
