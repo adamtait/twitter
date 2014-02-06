@@ -187,9 +187,9 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     [fakeTextView updateContentWithString:tweet.text];    // setAttributedText:[[NSAttributedString alloc] initWithString:[_todoList getStringForIndex:indexPath.row]]
     
     if (tweet.retweeted) {
-        return (5 + 16) + [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 35;
+        return (5 + 16) + [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 55;
     } else {
-        return [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 35;
+        return [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 55;
     }
 }
 

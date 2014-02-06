@@ -14,6 +14,8 @@
 
 @interface TweetView ()
 
+    @property (nonatomic, strong) Tweet *tweet;
+
     // private UIKit objects
     @property (nonatomic, strong) UIImageView *profileImageView;
     @property (nonatomic, strong) UILabel *usernameLabel;
@@ -25,13 +27,20 @@
     @property (nonatomic, strong) UIImageView *retweetHeaderImageView;
     @property (nonatomic, strong) UILabel *retweetHeaderLabel;
 
-    @property (nonatomic, strong) NSLayoutConstraint *tweetTextViewHeightConstraint;
 
+    // private instance methods
+    - (CGFloat)getLayoutHeight;
 
     // handling constraints
+    @property (nonatomic, strong) NSLayoutConstraint *tweetTextViewHeightConstraint;
     - (void)addConstraintsToHeaderLineWithHeightOffset:(int)heightOffset;
     - (void)addConstraintsToTweetTextView;
     - (int)addConstraintsToRetweetHeaderLine;
+
+    // gesture recognizers
+    - (void)replyImageWasTouched:(UITapGestureRecognizer *)recognizer;
+    - (void)retweetImageWasTouched:(UITapGestureRecognizer *)recognizer;
+    - (void)favoriteImageWasTouched:(UITapGestureRecognizer *)recognizer;
 
 @end
 
@@ -81,8 +90,11 @@
         
         // add tweet action UIImageViews
         _replyImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"reply.png"]];
+        [_replyImageView setUserInteractionEnabled:YES];
         _retweetImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"retweet.png"]];
+        [_retweetImageView setUserInteractionEnabled:YES];
         _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite.png"]];
+        [_favoriteImageView setUserInteractionEnabled:YES];
         [self addSubview:_replyImageView];
         [self addSubview:_retweetImageView];
         [self addSubview:_favoriteImageView];
@@ -90,12 +102,18 @@
         // add constraints
         [self addConstraintsToTweetTextView];
         [self addConstraintsToFooterLine];
+        
+        // add gesture recognizers for the tweet action images/buttons
+        [_replyImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(replyImageWasTouched:)]];
+        [_retweetImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(retweetImageWasTouched:)]];
+        [_favoriteImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(favoriteImageWasTouched:)]];
     }
     return self;
 }
 
 - (void)updateContentWithTweet:(Tweet *)tweet
 {
+    _tweet = tweet;
     [TweetView loadImageFromUrl:tweet.profileImageURL imageView:_profileImageView];
     _usernameLabel.text = tweet.username;
     [_usernameLabel sizeToFit];
@@ -121,7 +139,14 @@
         [self addConstraintsToHeaderLineWithHeightOffset:0];
     }
     [_content updateContentWithString:tweet.text];
+    
+    // update height constraint on the TweetTextView
     _tweetTextViewHeightConstraint.constant = [_content getLayoutHeightForWidth:275.0];
+    
+    // update height on the view frame
+    CGRect frame = self.frame;
+    frame.size.height = [self getLayoutHeight];
+    self.frame = frame;
 }
 
 
@@ -334,6 +359,42 @@
                           views:NSDictionaryOfVariableBindings(retweetHeaderImageView, retweetHeaderLabel)]];
     
     return 5 + 16;
+}
+
+
+- (CGFloat)getLayoutHeight
+{
+    CGFloat textViewHeight = 10 + [_content getLayoutHeightForWidth:275.0];
+    CGFloat headerLineHeight = 5 + 20;
+    CGFloat footerLineHeight = _replyImageView.frame.size.height;
+    CGFloat retweetHeaderLineBuffer = 30;
+    return textViewHeight + headerLineHeight + footerLineHeight + retweetHeaderLineBuffer;
+}
+
+
+# pragma gesture recognizers
+
+
+- (void)replyImageWasTouched:(UITapGestureRecognizer *)recognizer
+{
+    NSLog(@"reply image was touched");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"replyToTweet" object:_tweet];
+}
+
+- (void)retweetImageWasTouched:(UITapGestureRecognizer *)recognizer
+{
+    NSLog(@"retweet image was touched");
+    if (!self.hasBeenRetweeted) {
+        [self setRetweeted];
+        [_tweet createRetweet];
+    }
+}
+
+- (void)favoriteImageWasTouched:(UITapGestureRecognizer *)recognizer
+{
+    NSLog(@"favorite image was touched");
+    [self setFavorited:!self.hasBeenFavorited];
+    [_tweet toggleFavorite];
 }
 
 @end

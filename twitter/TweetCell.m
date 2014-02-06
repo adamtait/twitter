@@ -44,7 +44,7 @@
         [self.contentView addSubview:_view];
         
         // add gesture recognizers
-        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tweetActions:)]];
+//        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tweetActions:)]];
     }
     return self;
 }
