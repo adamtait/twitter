@@ -24,6 +24,7 @@ static NSString * const cellIdentifier = @"TweetCell";
 
     // private propeties
     @property (nonatomic, strong) NSMutableArray *tweets;
+    @property (atomic, assign) BOOL tweetLoadingStarted;
 
     // private methods
     - (void)reload:(id)sender;
@@ -31,7 +32,6 @@ static NSString * const cellIdentifier = @"TweetCell";
     - (void)newTweet:(id)sender;
     - (void)afterNewTweet:(id)sender;
     - (void)replyToTweet:(id)sender;
-    - (void)didSelectTweet:(id)sender;
 
 @end
 
@@ -50,12 +50,8 @@ static NSString * const cellIdentifier = @"TweetCell";
 {
     [super viewDidLoad];
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
+    _tweetLoadingStarted = NO;
+
     // setup the UITableView delegate to be this UITableViewController
     [self.tableView setDelegate:self];
     
@@ -74,10 +70,11 @@ static NSString * const cellIdentifier = @"TweetCell";
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"new" style:UIBarButtonItemStylePlain target:self action:@selector(newTweet:)];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
+    // handle events from subviews
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterNewTweet:) name:@"newTweet" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(replyToTweet:) name:@"replyToTweet" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSelectTweet:) name:@"tweetWasSelected" object:nil];
     
+    // handle pull to refresh
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(reload:) forControlEvents:UIControlEventValueChanged];
     [self setRefreshControl:refreshControl];
@@ -103,18 +100,24 @@ static NSString * const cellIdentifier = @"TweetCell";
     static NSString *CellIdentifier = @"Cell";
     TweetCell *cell = [[TweetCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 
-    if (indexPath.row > ([_tweets count] - 10)) {
+    if (indexPath.row > ([_tweets count] - 10) && !_tweetLoadingStarted) {
+        
         // to handle infinite scrolling, let's load more tweets
         int indexOfLastLoadedTweet = (int)[_tweets count] - 1;
         Tweet *lastLoadedTweet = _tweets[indexOfLastLoadedTweet];
+        
+        _tweetLoadingStarted = YES;
+        
         [[TwitterClient instance] homeTimelineWithCount:50 sinceId:nil maxId:lastLoadedTweet.idStr
                                                 success:^(AFHTTPRequestOperation *operation, id response) {
                                                     
                                                     [_tweets addObjectsFromArray:[Tweet tweetsWithArray:response]];
                                                     [self.tableView reloadData];
+                                                    _tweetLoadingStarted = NO;
                                                     
                                                 } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                     // TODO handle network error
+                                                    _tweetLoadingStarted = NO;
                                                 }];
     }
     
