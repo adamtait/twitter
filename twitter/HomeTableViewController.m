@@ -32,6 +32,7 @@ static NSString * const cellIdentifier = @"TweetCell";
     - (void)newTweet:(id)sender;
     - (void)afterNewTweet:(id)sender;
     - (void)replyToTweet:(id)sender;
+    - (void)handleInfiniteScrollGivenIndex:(int)index;
 
 @end
 
@@ -95,31 +96,9 @@ static NSString * const cellIdentifier = @"TweetCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // cell re-use becomes a problem some cells are retweet cells, and others are not
-    // it's easier to just re-create the cell everytime (yes, this is a hack)
-    static NSString *CellIdentifier = @"Cell";
-    TweetCell *cell = [[TweetCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    TweetCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
 
-    if (indexPath.row > ([_tweets count] - 10) && !_tweetLoadingStarted) {
-        
-        // to handle infinite scrolling, let's load more tweets
-        int indexOfLastLoadedTweet = (int)[_tweets count] - 1;
-        Tweet *lastLoadedTweet = _tweets[indexOfLastLoadedTweet];
-        
-        _tweetLoadingStarted = YES;
-        
-        [[TwitterClient instance] homeTimelineWithCount:50 sinceId:nil maxId:lastLoadedTweet.idStr
-                                                success:^(AFHTTPRequestOperation *operation, id response) {
-                                                    
-                                                    [_tweets addObjectsFromArray:[Tweet tweetsWithArray:response]];
-                                                    [self.tableView reloadData];
-                                                    _tweetLoadingStarted = NO;
-                                                    
-                                                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                    // TODO handle network error
-                                                    _tweetLoadingStarted = NO;
-                                                }];
-    }
+    [self handleInfiniteScrollGivenIndex:(int)indexPath.row];
     
     [cell updateContentWithTweet:_tweets[indexPath.row]];
     return cell;
@@ -194,6 +173,30 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     NewTweetViewController *newTweetViewController = [[NewTweetViewController alloc] init];
     newTweetViewController.prefilledText = [NSString stringWithFormat:@"%@ ", tweet.userhandle];
     [self.navigationController pushViewController:newTweetViewController animated:YES];
+}
+
+- (void)handleInfiniteScrollGivenIndex:(int)index
+{
+    if (index > ([_tweets count] - 10) && !_tweetLoadingStarted) {
+        
+        int indexOfLastLoadedTweet = (int)[_tweets count] - 1;
+        Tweet *lastLoadedTweet = _tweets[indexOfLastLoadedTweet];
+        
+        // provide synchonization & remove possibility that many requests are made at the same time
+        _tweetLoadingStarted = YES;
+        
+        [[TwitterClient instance] homeTimelineWithCount:50 sinceId:nil maxId:lastLoadedTweet.idStr
+                                                success:^(AFHTTPRequestOperation *operation, id response) {
+                                                    
+                                                    [_tweets addObjectsFromArray:[Tweet tweetsWithArray:response]];
+                                                    [self.tableView reloadData];
+                                                    _tweetLoadingStarted = NO;
+                                                    
+                                                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                    // TODO handle network error
+                                                    _tweetLoadingStarted = NO;
+                                                }];
+    }
 }
 
 

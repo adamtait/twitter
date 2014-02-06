@@ -32,7 +32,9 @@
     - (CGFloat)getLayoutHeight;
 
     // handling constraints
+    @property (nonatomic, strong) NSLayoutConstraint *retweetHeaderLabelHeightConstraint;
     @property (nonatomic, strong) NSLayoutConstraint *tweetTextViewHeightConstraint;
+    - (void)initConstraintsToRetweetHeader;
     - (void)addConstraintsToHeaderLine;
     - (void)addConstraintsToTweetTextView;
     - (void)addConstraintsToRetweetHeaderLine;
@@ -71,6 +73,8 @@
         _hasBeenFavorited = NO;
         _hasBeenRetweeted = NO;
         
+        self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+        
         // remove all subviews from the UITableViewCell contentView
         [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
         
@@ -82,13 +86,7 @@
         _retweetHeaderImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"retweet.png"]];
         _retweetHeaderLabel = [TweetView setupLabelWithFont:[UIFont systemFontOfSize:12.0] textColor:[Color fontGray]];
         [self addSubview:_retweetHeaderLabel];
-        
-        // add vertical constraints to favoriteImageView
-        [self addConstraints:[NSLayoutConstraint
-                              constraintsWithVisualFormat:@"V:|-5-[_retweetHeaderLabel]"
-                              options:NSLayoutFormatDirectionLeadingToTrailing
-                              metrics:nil
-                              views:NSDictionaryOfVariableBindings(_retweetHeaderLabel)]];
+        [self initConstraintsToRetweetHeader];
         
         // add profileImage & username & userhandle to contentView
         _profileImageView = [TweetView setupImageView];
@@ -140,12 +138,13 @@
     {
         _retweetHeaderLabel.text = tweet.retweeterUserhandle;
         [_retweetHeaderLabel sizeToFit];
-        [self addSubview:_retweetHeaderImageView];     //.frame = CGRectMake(0, 0, _retweetHeaderImageView.image.size.width, _retweetHeaderImageView.image.size.height);
+        _retweetHeaderLabelHeightConstraint.constant = _retweetHeaderLabel.frame.size.height;
+        [self addSubview:_retweetHeaderImageView];
         [self addConstraintsToRetweetHeaderLine];
     }
     else
     {
-        _retweetHeaderLabel.frame = CGRectZero;
+        _retweetHeaderLabelHeightConstraint.constant = 0;
         [_retweetHeaderImageView removeFromSuperview];
     }
     
@@ -171,7 +170,6 @@
     UILabel *label = [[UILabel alloc] init];
     label.font = font;
     label.numberOfLines = 1;
-    label.baselineAdjustment = UIBaselineAdjustmentAlignBaselines; // or UIBaselineAdjustmentAlignCenters, or UIBaselineAdjustmentNone
     label.adjustsFontSizeToFitWidth = NO;
     //    label.minimumScaleFactor = 10.0f/12.0f;
     label.clipsToBounds = YES;
@@ -226,6 +224,25 @@
 
 
 #pragma adding & handling constraints
+
+- (void)initConstraintsToRetweetHeader
+{
+    _retweetHeaderLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _retweetHeaderLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_retweetHeaderLabel
+                                                                       attribute:NSLayoutAttributeHeight
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:nil
+                                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                                      multiplier:1
+                                                                        constant:0];
+    [_retweetHeaderLabel addConstraint:_retweetHeaderLabelHeightConstraint];
+    
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"V:|-7-[_retweetHeaderLabel]"
+                          options:NSLayoutFormatDirectionLeadingToTrailing
+                          metrics:nil
+                          views:NSDictionaryOfVariableBindings(_retweetHeaderLabel)]];
+}
 
 - (void)addConstraintsToRetweetHeaderLine
 {
