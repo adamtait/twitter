@@ -26,8 +26,23 @@
         _tweet = tweet;
         self.navigationItem.title = @"tweet";
         
-        _tweetView = [[FullTweetView alloc] initWithFrame:CGRectMake(0, 80, 320, 300)];
+        _tweetView = [[FullTweetView alloc] initWithFrame:CGRectMake(0, 0, 300, 700)];
         [self.view addSubview:_tweetView];
+        
+        // add constraints for tweetView
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_tweetView attribute:NSLayoutAttributeWidth
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:nil attribute:NSLayoutAttributeNotAnAttribute
+                                                             multiplier:1.0 constant:300]];
+        [self.view addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"H:|-[_tweetView]"
+                                   options:0 metrics:nil
+                                   views:NSDictionaryOfVariableBindings(_tweetView)]];
+        id topGuide = self.topLayoutGuide;
+        [self.view addConstraints:[NSLayoutConstraint
+                                  constraintsWithVisualFormat:@"V:[topGuide]-[_tweetView]"
+                                  options:0 metrics:nil
+                                  views:NSDictionaryOfVariableBindings(topGuide, _tweetView)]];
     }
     return self;
 }

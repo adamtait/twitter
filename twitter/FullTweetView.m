@@ -45,6 +45,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.translatesAutoresizingMaskIntoConstraints = NO;
         [self addConstraintsToHeaderLine];
         [self addConstraintsToTweetTextView];
         
@@ -82,6 +83,7 @@
     CGRect frame = self.frame;
     frame.size.height = [self getLayoutHeight];
     self.frame = frame;
+    [self bringSubviewToFront:[super.content getTextView]];
 }
 
 - (void)updateCountLabelsWithTweet:(Tweet *)tweet
@@ -193,15 +195,13 @@
     
     // add constraints separating all labels & images
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"H:|-7-[profileImageView]-7-[usernameLabel]"
+                          constraintsWithVisualFormat:@"H:|-[profileImageView]-12-[usernameLabel]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
                           views:NSDictionaryOfVariableBindings(profileImageView, usernameLabel)]];
-    [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"H:|-7-[profileImageView]-7-[userhandleLabel]"
-                          options:NSLayoutFormatDirectionLeadingToTrailing
-                          metrics:nil
-                          views:NSDictionaryOfVariableBindings(profileImageView, userhandleLabel)]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:profileImageView attribute:NSLayoutAttributeRight
+                                                     relatedBy:NSLayoutRelationEqual toItem:userhandleLabel
+                                                     attribute:NSLayoutAttributeLeft multiplier:1.0 constant:-12]];
     [self addConstraints:[NSLayoutConstraint
                           constraintsWithVisualFormat:@"H:|-10-[dateLabel]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
@@ -318,11 +318,11 @@
 
 - (CGFloat)getLayoutHeight
 {
-    CGFloat textViewHeight = 10 + [super.content getLayoutHeightForWidth:275.0];
+    CGFloat textViewHeight = 10 + [super.content getLayoutHeightForWidth:260];
     CGFloat headerLineHeight = 5 + 20;
     CGFloat footerLineHeight = super.replyImageView.frame.size.height;
     CGFloat retweetHeaderLineBuffer = 30;
-    return textViewHeight + headerLineHeight + footerLineHeight + retweetHeaderLineBuffer + 100;
+    return textViewHeight + headerLineHeight + footerLineHeight + retweetHeaderLineBuffer + 50;
 }
 
 @end
