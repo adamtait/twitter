@@ -116,6 +116,7 @@
     _userhandleLabel.text = tweet.userhandle;
     _dateLabel.text = tweet.createdAt;
     [self setFavorited:tweet.favorited];
+    [self setRetweeted:tweet.retweetedByMe];
     
     if (tweet.retweeted)
     {

@@ -26,6 +26,7 @@
     @property (nonatomic, strong, readonly) NSString *retweeterUserhandle;
     @property (nonatomic, strong, readonly) NSString *favoriteCount;
     @property (nonatomic, strong, readonly) NSString *retweetCount;
+    @property BOOL retweetedByMe;
 
     // public methods
     - (id)initWithString:(NSString *)status;

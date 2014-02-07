@@ -35,6 +35,7 @@
         Tweet *tweet = [[Tweet alloc] initWithDictionary:params];
         [tweet generateCreatedFromDateString:tweet.data[@"created_at"]];
         tweet.favorited = [tweet.data[@"favorited"] boolValue];
+        tweet.retweetedByMe = [tweet.data[@"retweeted"] boolValue];
         tweet.retweeted = tweet.data[@"retweeted_status"] != nil;
         [tweets addObject:tweet];
     }
