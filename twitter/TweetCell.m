@@ -11,12 +11,12 @@
 #import "TweetCell.h"
 #import "TweetTextView.h"
 #import "Color.h"
-#import "TweetView.h"
+#import "ShortTweetView.h"
 
 @interface TweetCell ()
 
     // private properties
-    @property (nonatomic, strong) TweetView *view;
+    @property (nonatomic, strong) ShortTweetView *view;
 
 @end
 
@@ -36,7 +36,7 @@
         self.separatorInset = UIEdgeInsetsZero;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         
-        _view = [[TweetView alloc] initWithFrame:self.contentView.frame];
+        _view = [[ShortTweetView alloc] initWithFrame:self.contentView.frame];
         [self.contentView addSubview:_view];
     }
     return self;
