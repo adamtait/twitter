@@ -30,4 +30,14 @@
     return [UIColor colorWithRed:102.0/255.0 green:117.0/255.0 blue:127.0/255.0 alpha:1];
 }
 
++ (UIColor *)fontYellow
+{
+    return [UIColor colorWithRed:253.0/255.0 green:208.0/255.0 blue:0.0 alpha:1];
+}
+
++ (UIColor *)fontRed
+{
+    return [UIColor colorWithRed:203.0/255.0 green:51.0/255.0 blue:28.0/255.0 alpha:1];
+}
+
 @end

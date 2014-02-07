@@ -14,5 +14,7 @@
     + (UIColor *)fontWhite;
     + (UIColor *)fontBlack;
     + (UIColor *)fontGray;
+    + (UIColor *)fontYellow;
+    + (UIColor *)fontRed;
 
 @end
