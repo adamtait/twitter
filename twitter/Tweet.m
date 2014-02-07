@@ -95,6 +95,16 @@
     }
 }
 
+- (NSString *)favoriteCount
+{
+    return self.data[@"favorite_count"];
+}
+
+- (NSString *)retweetCount
+{
+    return self.data[@"retweet_count"];
+}
+
 
 
 #pragma public instance methods

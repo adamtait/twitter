@@ -17,16 +17,21 @@
 
 @interface FullTweetView ()
 
-// private instance methods
-- (CGFloat)getLayoutHeight;
+    // private properties
+    @property (nonatomic, strong) UILabel *retweetCountLabel;
+    @property (nonatomic, strong) UILabel *favoriteCountLabel;
 
-// handling constraints
-@property (nonatomic, strong) NSLayoutConstraint *retweetHeaderLabelHeightConstraint;
-@property (nonatomic, strong) NSLayoutConstraint *tweetTextViewHeightConstraint;
-- (void)initConstraintsToRetweetHeader;
-- (void)addConstraintsToHeaderLine;
-- (void)addConstraintsToTweetTextView;
-- (void)addConstraintsToRetweetHeaderLine;
+    // private instance methods
+    - (CGFloat)getLayoutHeight;
+
+    // handling constraints
+    @property (nonatomic, strong) NSLayoutConstraint *retweetHeaderLabelHeightConstraint;
+    @property (nonatomic, strong) NSLayoutConstraint *tweetTextViewHeightConstraint;
+    - (void)initConstraintsToRetweetHeader;
+    - (void)addConstraintsToHeaderLine;
+    - (void)addConstraintsToTweetTextView;
+    - (void)addConstraintsToRetweetHeaderLine;
+    - (void)addConstraintsToExtraInfoLine;
 
 @end
 
@@ -41,8 +46,16 @@
     if (self) {
         [self addConstraintsToHeaderLine];
         [self addConstraintsToTweetTextView];
-        [self addConstraintsToFooterLine];
+        
         [super.content getTextView].font = [TweetTextView largerFont];
+        
+        _retweetCountLabel = [TweetView setupLabelWithFont:[UIFont boldSystemFontOfSize:14.0] textColor:[Color fontGray]];
+        _favoriteCountLabel = [TweetView setupLabelWithFont:[UIFont boldSystemFontOfSize:14.0] textColor:[Color fontGray]];
+        [self addSubview:_retweetCountLabel];
+        [self addSubview:_favoriteCountLabel];
+        [self addConstraintsToExtraInfoLine];
+        
+        [self addConstraintsToFooterLine];
     }
     return self;
 }
@@ -55,8 +68,12 @@
     {
         [self addConstraintsToRetweetHeaderLine];
     }
+    
+    _retweetCountLabel.text = [NSString stringWithFormat:@"%@ retweets", tweet.retweetCount];
+    _favoriteCountLabel.text = [NSString stringWithFormat:@"%@ favorites", tweet.favoriteCount];
+    
     // update height constraint on the TweetTextView
-    super.tweetTextViewHeightConstraint.constant = [super.content getLayoutHeightForWidth:275.0];
+    super.tweetTextViewHeightConstraint.constant = [super.content getLayoutHeightForWidth:300.0];
     
     // update height on the view frame
     CGRect frame = self.frame;
@@ -196,30 +213,29 @@
     UIImageView *replyImageView = super.replyImageView;
     UIImageView *retweetImageView = super.retweetImageView;
     UIImageView *favoriteImageView = super.favoriteImageView;
-    UILabel *dateLabel = super.dateLabel;
-    
+
     replyImageView.translatesAutoresizingMaskIntoConstraints = NO;
     retweetImageView.translatesAutoresizingMaskIntoConstraints = NO;
     favoriteImageView.translatesAutoresizingMaskIntoConstraints = NO;
     
     // add vertical constraints to replyImageView
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:[dateLabel]-[replyImageView]"
+                          constraintsWithVisualFormat:@"V:[_retweetCountLabel]-[replyImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
-                          views:NSDictionaryOfVariableBindings(dateLabel, replyImageView)]];
+                          views:NSDictionaryOfVariableBindings(_retweetCountLabel, replyImageView)]];
     // add vertical constraints to retweetImageView
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:[dateLabel]-[retweetImageView]"
+                          constraintsWithVisualFormat:@"V:[_retweetCountLabel]-[retweetImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
-                          views:NSDictionaryOfVariableBindings(dateLabel, retweetImageView)]];
+                          views:NSDictionaryOfVariableBindings(_retweetCountLabel, retweetImageView)]];
     // add vertical constraints to favoriteImageView
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:[dateLabel]-[favoriteImageView]"
+                          constraintsWithVisualFormat:@"V:[_retweetCountLabel]-[favoriteImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
-                          views:NSDictionaryOfVariableBindings(dateLabel, favoriteImageView)]];
+                          views:NSDictionaryOfVariableBindings(_retweetCountLabel, favoriteImageView)]];
     
     [self addConstraints:[NSLayoutConstraint
                           constraintsWithVisualFormat:@"H:|-40-[replyImageView]-40-[retweetImageView]-40-[favoriteImageView]"
@@ -236,7 +252,34 @@
                                                          relatedBy:NSLayoutRelationEqual toItem:nil
                                                          attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30]];
     }
+}
+
+- (void)addConstraintsToExtraInfoLine
+{
+    UILabel *dateLabel = super.dateLabel;
     
+    _retweetCountLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _favoriteCountLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    // add vertical constraints to retweet & favorite count labels
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"V:[dateLabel]-[_retweetCountLabel]"
+                          options:NSLayoutFormatDirectionLeadingToTrailing
+                          metrics:nil
+                          views:NSDictionaryOfVariableBindings(dateLabel, _retweetCountLabel)]];
+    
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"V:[dateLabel]-[_favoriteCountLabel]"
+                          options:NSLayoutFormatDirectionLeadingToTrailing
+                          metrics:nil
+                          views:NSDictionaryOfVariableBindings(dateLabel, _favoriteCountLabel)]];
+    
+    // add horizontal constraints
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"H:|-40-[_retweetCountLabel]-30-[_favoriteCountLabel]"
+                          options:NSLayoutFormatDirectionLeadingToTrailing
+                          metrics:nil
+                          views:NSDictionaryOfVariableBindings(_retweetCountLabel, _favoriteCountLabel)]];
 }
 
 
