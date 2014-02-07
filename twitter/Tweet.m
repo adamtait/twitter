@@ -162,12 +162,14 @@
                                    callback:^(NSDictionary *tweetWithRetweet) {
                                        _userRetweetedResponse = tweetWithRetweet;
                                    }];
+    _retweetedByMe = YES;
     return YES;
 }
 
 - (BOOL)deleteRetweet
 {
     [[TwitterClient instance] deleteRetweet:_userRetweetedResponse[@"id_str"]];
+    _retweetedByMe = NO;
     return YES;
 }
 

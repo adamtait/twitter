@@ -80,6 +80,8 @@ static NSString * const cellIdentifier = @"TweetCell";
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(reload:) forControlEvents:UIControlEventValueChanged];
     [self setRefreshControl:refreshControl];
+    
+    NSLog(@"view did load");
 }
 
 - (void)didReceiveMemoryWarning
@@ -130,6 +132,17 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     } else {
         return [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 45;
     }
+}
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [(TweetCell *)cell updateContentWithTweet:_tweets[indexPath.row]];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.tableView reloadData];
 }
 
 
