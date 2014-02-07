@@ -70,22 +70,18 @@
 - (void)initConstraintsToRetweetHeader
 {
     super.retweetHeaderLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    super.retweetHeaderLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:super.retweetHeaderLabel
-                                                                       attribute:NSLayoutAttributeHeight
-                                                                       relatedBy:NSLayoutRelationEqual
-                                                                          toItem:nil
-                                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                                      multiplier:1
-                                                                        constant:0];
+    super.retweetHeaderLabelHeightConstraint = [NSLayoutConstraint
+                                                constraintWithItem:super.retweetHeaderLabel attribute:NSLayoutAttributeHeight
+                                                relatedBy:NSLayoutRelationEqual
+                                                toItem:nil attribute:NSLayoutAttributeNotAnAttribute
+                                                multiplier:1 constant:0];
     [super.retweetHeaderLabel addConstraint:super.retweetHeaderLabelHeightConstraint];
     
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self
-                                                     attribute:NSLayoutAttributeTop
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:super.retweetHeaderLabel
-                                                     attribute:NSLayoutAttributeTop
-                                                    multiplier:1
-                                                      constant:-7]];
+    [self addConstraint:[NSLayoutConstraint
+                         constraintWithItem:self attribute:NSLayoutAttributeTop
+                         relatedBy:NSLayoutRelationEqual
+                         toItem:super.retweetHeaderLabel attribute:NSLayoutAttributeTop
+                         multiplier:1 constant:-7]];
 }
 
 - (void)addConstraintsToRetweetHeaderLine
@@ -226,10 +222,20 @@
                           views:NSDictionaryOfVariableBindings(dateLabel, favoriteImageView)]];
     
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"H:|-40-[replyImageView]-25-[retweetImageView]-25-[favoriteImageView]"
+                          constraintsWithVisualFormat:@"H:|-40-[replyImageView]-40-[retweetImageView]-40-[favoriteImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
                           views:NSDictionaryOfVariableBindings(replyImageView, retweetImageView, favoriteImageView)]];
+    
+    // add width & height constraints
+    for (UIImageView *tweetActionImageView in [NSArray arrayWithObjects:replyImageView, retweetImageView, favoriteImageView, nil]) {
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:tweetActionImageView attribute:NSLayoutAttributeWidth
+                                                         relatedBy:NSLayoutRelationEqual toItem:nil
+                                                         attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:tweetActionImageView attribute:NSLayoutAttributeHeight
+                                                         relatedBy:NSLayoutRelationEqual toItem:nil
+                                                         attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30]];
+    }
     
 }
 
