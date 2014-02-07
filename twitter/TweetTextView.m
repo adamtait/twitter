@@ -11,11 +11,8 @@
 
 @interface TweetTextView  ()
 
-@property (nonatomic, strong) UITextView *textView;
-
-@property (nonatomic, strong) NSTextContainer *container;
-@property (nonatomic, strong) NSTextStorage *storage;
-@property (nonatomic, strong) NSLayoutManager *layout;
+    // private properties
+    @property (nonatomic, strong) UITextView *textView;
 
 @end
 
@@ -28,10 +25,6 @@
     return [UIFont systemFontOfSize:14.0];
 }
 
-+ (NSLineBreakMode)defaultLineBreakMode
-{
-    return NSLineBreakByWordWrapping;
-}
 
 #pragma public instance methods
 

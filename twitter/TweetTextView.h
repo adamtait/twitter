@@ -12,7 +12,6 @@
 
     // public static methods
     + (UIFont *)defaultFont;
-    + (NSLineBreakMode)defaultLineBreakMode;
 
     // accessors
     - (UITextView *)getTextView;
