@@ -15,9 +15,15 @@ check out your current tweet stream
 
 ![home view controller](https://dl.dropboxusercontent.com/u/3992486/app_screenshots/twitter/home_view_controller.png)
 
+get some details on each tweet
+
+![tweet details in full screen](https://dl.dropboxusercontent.com/u/3992486/app_screenshots/twitter/tweet_detail.png)
+![tweet details in full screen](https://dl.dropboxusercontent.com/u/3992486/app_screenshots/twitter/tweet_detail_w_actions.png)
+
 reply to a tweet or add a new one
 
 ![reply to a tweet](https://dl.dropboxusercontent.com/u/3992486/app_screenshots/twitter/reply_tweet.png)
+![write a tweet, but there's a limit!](https://dl.dropboxusercontent.com/u/3992486/app_screenshots/twitter/reply_tweet_error.png)
 
 
 
