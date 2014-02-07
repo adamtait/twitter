@@ -22,6 +22,7 @@
     @property (nonatomic, strong) UILabel *favoriteCountLabel;
 
     // private instance methods
+    - (void)updateCountLabelsWithTweet:(Tweet *)tweet;
     - (CGFloat)getLayoutHeight;
 
     // handling constraints
@@ -60,6 +61,9 @@
     return self;
 }
 
+
+#pragma mark - Update View Content methods
+
 - (void)updateContentWithTweet:(Tweet *)tweet
 {
     [super updateContentWithTweet:tweet];
@@ -69,8 +73,7 @@
         [self addConstraintsToRetweetHeaderLine];
     }
     
-    _retweetCountLabel.text = [NSString stringWithFormat:@"%@ retweets", tweet.retweetCount];
-    _favoriteCountLabel.text = [NSString stringWithFormat:@"%@ favorites", tweet.favoriteCount];
+    [self updateCountLabelsWithTweet:tweet];
     
     // update height constraint on the TweetTextView
     super.tweetTextViewHeightConstraint.constant = [super.content getLayoutHeightForWidth:300.0];
@@ -79,6 +82,36 @@
     CGRect frame = self.frame;
     frame.size.height = [self getLayoutHeight];
     self.frame = frame;
+}
+
+- (void)updateCountLabelsWithTweet:(Tweet *)tweet
+{
+    if (super.hasBeenRetweeted) {
+        int retweetCount = [tweet.retweetCount intValue];
+        _retweetCountLabel.text = [NSString stringWithFormat:@"%d retweets", retweetCount + 1];
+    } else {
+        _retweetCountLabel.text = [NSString stringWithFormat:@"%@ retweets", tweet.retweetCount];
+    }
+    if (super.hasBeenFavorited) {
+        int favoriteCount = [tweet.favoriteCount intValue];
+        _favoriteCountLabel.text = [NSString stringWithFormat:@"%d favorites", favoriteCount + 1];
+    } else {
+        _favoriteCountLabel.text = [NSString stringWithFormat:@"%@ favorites", tweet.favoriteCount];
+    }
+}
+
+#pragma mark - View state methods
+
+- (void)setFavorited:(BOOL)favorited
+{
+    [super setFavorited:favorited];
+    [self updateCountLabelsWithTweet:super.tweet];
+}
+
+- (void)setRetweeted:(BOOL)retweeted
+{
+    [super setRetweeted:retweeted];
+    [self updateCountLabelsWithTweet:super.tweet];
 }
 
 
