@@ -102,15 +102,15 @@
 
 #pragma mark - View state methods
 
-- (void)setFavorited:(BOOL)favorited
-{
-    [super setFavorited:favorited];
-    [self updateCountLabelsWithTweet:super.tweet];
-}
-
 - (void)setRetweeted:(BOOL)retweeted
 {
     [super setRetweeted:retweeted];
+    [self updateCountLabelsWithTweet:super.tweet];
+}
+
+- (void)setFavorited:(BOOL)favorited
+{
+    [super setFavorited:favorited];
     [self updateCountLabelsWithTweet:super.tweet];
 }
 
