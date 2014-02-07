@@ -217,10 +217,16 @@
     [_favoriteImageView setImage:image];
 }
 
-- (void)setRetweeted
+- (void)setRetweeted:(BOOL)retweeted
 {
-    _hasBeenRetweeted = YES;
-    [_retweetImageView setImage:[UIImage imageNamed:@"retweet_on.png"]];
+    _hasBeenRetweeted = retweeted;
+    UIImage *image;
+    if (_hasBeenRetweeted) {
+        image = [UIImage imageNamed:@"retweet_on.png"];
+    } else {
+        image = [UIImage imageNamed:@"retweet.png"];
+    }
+    [_retweetImageView setImage:image];
 }
 
 
@@ -400,7 +406,6 @@
 
 - (void)replyImageWasTouched:(UITapGestureRecognizer *)recognizer
 {
-    NSLog(@"reply image was touched");
     [[NSNotificationCenter defaultCenter] postNotificationName:@"replyToTweet" object:_tweet];
 }
 
@@ -408,14 +413,15 @@
 {
     NSLog(@"retweet image was touched");
     if (!self.hasBeenRetweeted) {
-        [self setRetweeted];
         [_tweet createRetweet];
+    } else {
+        [_tweet deleteRetweet];
     }
+    [self setRetweeted:!self.hasBeenRetweeted];
 }
 
 - (void)favoriteImageWasTouched:(UITapGestureRecognizer *)recognizer
 {
-    NSLog(@"favorite image was touched");
     [self setFavorited:!self.hasBeenFavorited];
     [_tweet toggleFavorite];
 }

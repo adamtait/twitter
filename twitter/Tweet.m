@@ -14,6 +14,8 @@
 
     // private properties
     @property (nonatomic, strong, readonly) NSDictionary *retweetedStatus;
+    @property (nonatomic, strong) NSDictionary *userRetweetedResponse;
+
 
     // private methods
     - (NSDictionary *)userDict;
@@ -34,7 +36,6 @@
         [tweet generateCreatedFromDateString:tweet.data[@"created_at"]];
         tweet.favorited = [tweet.data[@"favorited"] boolValue];
         tweet.retweeted = tweet.data[@"retweeted_status"] != nil;
-
         [tweets addObject:tweet];
     }
     return tweets;
@@ -146,9 +147,19 @@
 
 - (BOOL)createRetweet
 {
-    [[TwitterClient instance] createRetweet:self.idStr];
+    [[TwitterClient instance] createRetweet:self.idStr
+                                   callback:^(NSDictionary *tweetWithRetweet) {
+                                       _userRetweetedResponse = tweetWithRetweet;
+                                   }];
     return YES;
 }
+
+- (BOOL)deleteRetweet
+{
+    [[TwitterClient instance] deleteRetweet:_userRetweetedResponse[@"id_str"]];
+    return YES;
+}
+
 
 - (BOOL)toggleFavorite
 {

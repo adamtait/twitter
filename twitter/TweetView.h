@@ -27,6 +27,6 @@
     // public methods
     - (void)updateContentWithTweet:(Tweet *)tweet;
     - (void)setFavorited:(BOOL)favorited;
-    - (void)setRetweeted;
+    - (void)setRetweeted:(BOOL)retweeted;
 
 @end

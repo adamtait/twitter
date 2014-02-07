@@ -11,6 +11,7 @@
 @interface TwitterClient : AFOAuth1Client
 
 + (TwitterClient *)instance;
++ (void (^)(AFHTTPRequestOperation *operation, id response))emptySuccessBlock;
 + (void (^)(AFHTTPRequestOperation *operation, NSError *error))networkFailureBlock;
 
 // Users API
@@ -33,7 +34,8 @@
                       success:(void (^)(AFHTTPRequestOperation *operation, id response))success
                       failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
-- (void)createRetweet:(NSString *)tweetId;
+- (void)createRetweet:(NSString *)tweetId callback:(void (^)(NSDictionary *tweetWithRetweet))callback;
+- (void)deleteRetweet:(NSString *)tweetId;
 - (void)createFavorite:(NSString *)tweetId;
 - (void)deleteFavorite:(NSString *)tweetId;
 - (void)updateStatusWithString:(NSString *)status;

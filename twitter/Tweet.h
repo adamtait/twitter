@@ -28,6 +28,7 @@
     // public methods
     - (id)initWithString:(NSString *)status;
     - (BOOL)createRetweet;
+    - (BOOL)deleteRetweet;
     - (BOOL)toggleFavorite;
 
 

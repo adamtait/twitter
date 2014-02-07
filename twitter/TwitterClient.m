@@ -31,6 +31,11 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
     return instance;
 }
 
++ (void (^)(AFHTTPRequestOperation *operation, id response))emptySuccessBlock
+{
+    return ^(AFHTTPRequestOperation *operation, id response) {};
+}
+
 + (void (^)(AFHTTPRequestOperation *operation, NSError *error))networkFailureBlock
 {
     return ^(AFHTTPRequestOperation *operation, NSError *error){
@@ -104,39 +109,44 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
           failure:failure];
 }
 
-- (void)createRetweet:(NSString *)tweetId
+- (void)createRetweet:(NSString *)tweetId callback:(void (^)(NSDictionary *tweetWithRetweet))callback
 {
     NSString *path = [NSString stringWithFormat:@"1.1/statuses/retweet/%@.json", tweetId];
     [self postPath:path parameters:[NSMutableDictionary dictionaryWithDictionary:@{@"id": tweetId}]
            success:^(AFHTTPRequestOperation *operation, id response) {
-               // Do nothing
+               callback((NSDictionary *)response);
            } failure:[TwitterClient networkFailureBlock]];
+}
+
+- (void)deleteRetweet:(NSString *)tweetId
+{
+    NSString *path = [NSString stringWithFormat:@"1.1/statuses/destroy/%@.json", tweetId];
+    [self postPath:path parameters:[NSMutableDictionary dictionaryWithDictionary:@{@"id": tweetId}]
+           success:[TwitterClient emptySuccessBlock]
+           failure:[TwitterClient networkFailureBlock]];
 }
 
 - (void)createFavorite:(NSString *)tweetId
 {
     [self postPath:@"1.1/favorites/create.json" parameters:[NSMutableDictionary dictionaryWithDictionary:@{@"id": tweetId}]
-          success:^(AFHTTPRequestOperation *operation, id response) {
-              // Do nothing
-          } failure:[TwitterClient networkFailureBlock]];
+          success:[TwitterClient emptySuccessBlock]
+          failure:[TwitterClient networkFailureBlock]];
 }
 
 - (void)deleteFavorite:(NSString *)tweetId
 {
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"id": tweetId}];
     [self postPath:@"1.1/favorites/destroy.json" parameters:params
-           success:^(AFHTTPRequestOperation *operation, id response) {
-               // Do nothing
-           } failure:[TwitterClient networkFailureBlock]];
+           success:[TwitterClient emptySuccessBlock]
+           failure:[TwitterClient networkFailureBlock]];
 }
 
 - (void)updateStatusWithString:(NSString *)status
 {
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"status": status}];
     [self postPath:@"1.1/statuses/update.json" parameters:params
-           success:^(AFHTTPRequestOperation *operation, id response) {
-               // Do nothing
-           } failure:[TwitterClient networkFailureBlock]];
+           success:[TwitterClient emptySuccessBlock]
+           failure:[TwitterClient networkFailureBlock]];
 }
 
 
