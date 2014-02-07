@@ -56,7 +56,7 @@
 
 - (void)updateContentWithString:(NSString *)content
 {
-    _textView.attributedText = [[NSAttributedString alloc] initWithString:content];
+    _textView.text = content;
 }
 
 - (int)getLayoutHeightForWidth:(CGFloat)width

@@ -97,7 +97,7 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
     if (maxId) {
         [params setObject:maxId forKey:@"max_id"];
     }
-    NSLog(@"sending timeline request to twitter with params / %@ /", params);
+
     [self getPath:@"1.1/statuses/home_timeline.json"
        parameters:params
           success:success

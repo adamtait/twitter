@@ -51,7 +51,6 @@
 # pragma private methods
 
 - (IBAction)onLoginButton:(id)sender {
-    NSLog(@"attempting to login");
     [[TwitterClient instance] authorizeWithCallbackUrl:[NSURL URLWithString:@"adamtait-twitter://success"]
                                                success:^(AFOAuth1Token *accessToken, id responseObject) {
                                                    [[TwitterClient instance] currentUserWithSuccess:^(AFHTTPRequestOperation *operation, id response) {

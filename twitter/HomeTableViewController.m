@@ -126,9 +126,9 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     [fakeTextView updateContentWithString:tweet.text];
     
     if (tweet.retweeted) {
-        return (5 + 16) + [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 35;
+        return (5 + 16) + [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 45;
     } else {
-        return [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 35;
+        return [TweetView defaultContentFrame].origin.y + [fakeTextView getLayoutHeightForWidth:275.0] + 45;
     }
 }
 
@@ -136,7 +136,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 #pragma private methods
 
 - (void)reload:(id)sender
-{
+{   
     [[TwitterClient instance] homeTimelineWithCount:50 sinceId:nil maxId:nil
                                             success:^(AFHTTPRequestOperation *operation, id response) {
                                                 
