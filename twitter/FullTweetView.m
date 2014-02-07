@@ -56,7 +56,6 @@
         [self addSubview:_retweetCountLabel];
         [self addSubview:_favoriteCountLabel];
         [self addConstraintsToExtraInfoLine];
-        
         [self addConstraintsToFooterLine];
     }
     return self;
@@ -77,13 +76,7 @@
     [self updateCountLabelsWithTweet:tweet];
     
     // update height constraint on the TweetTextView
-    super.tweetTextViewHeightConstraint.constant = [super.content getLayoutHeightForWidth:300.0];
-    
-    // update height on the view frame
-    CGRect frame = self.frame;
-    frame.size.height = [self getLayoutHeight];
-    self.frame = frame;
-    [self bringSubviewToFront:[super.content getTextView]];
+    super.tweetTextViewHeightConstraint.constant = [super.content getLayoutHeightForWidth:260.0];
 }
 
 - (void)updateCountLabelsWithTweet:(Tweet *)tweet

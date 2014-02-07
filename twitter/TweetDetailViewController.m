@@ -34,6 +34,10 @@
                                                               relatedBy:NSLayoutRelationEqual
                                                                  toItem:nil attribute:NSLayoutAttributeNotAnAttribute
                                                              multiplier:1.0 constant:300]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_tweetView attribute:NSLayoutAttributeHeight
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:nil attribute:NSLayoutAttributeNotAnAttribute
+                                                             multiplier:1.0 constant:700]];
         [self.view addConstraints:[NSLayoutConstraint
                                    constraintsWithVisualFormat:@"H:|-[_tweetView]"
                                    options:0 metrics:nil
@@ -52,7 +56,6 @@
 {
     [super viewDidLoad];
     [_tweetView updateContentWithTweet:_tweet];
-    [self.view sendSubviewToBack:_tweetView];
 }
 
 - (void)didReceiveMemoryWarning
