@@ -42,6 +42,7 @@
         [self addConstraintsToHeaderLine];
         [self addConstraintsToTweetTextView];
         [self addConstraintsToFooterLine];
+        [super.content getTextView].font = [TweetTextView largerFont];
     }
     return self;
 }
@@ -78,11 +79,13 @@
                                                                         constant:0];
     [super.retweetHeaderLabel addConstraint:super.retweetHeaderLabelHeightConstraint];
     
-    [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:|-7-[retweetHeaderLabel]"
-                          options:NSLayoutFormatDirectionLeadingToTrailing
-                          metrics:nil
-                          views:NSDictionaryOfVariableBindings(super.retweetHeaderLabel)]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self
+                                                     attribute:NSLayoutAttributeTop
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:super.retweetHeaderLabel
+                                                     attribute:NSLayoutAttributeTop
+                                                    multiplier:1
+                                                      constant:-7]];
 }
 
 - (void)addConstraintsToRetweetHeaderLine
@@ -120,36 +123,41 @@
     userhandleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
-    // add vertical constraints to profileImage View
+    // add constraints to profileImage View
     [self addConstraint:[NSLayoutConstraint constraintWithItem:super.retweetHeaderLabel attribute:NSLayoutAttributeBottom
                                                      relatedBy:NSLayoutRelationEqual toItem:profileImageView
                                                      attribute:NSLayoutAttributeTop multiplier:1.0 constant:-7]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:profileImageView attribute:NSLayoutAttributeWidth
+                                                     relatedBy:NSLayoutRelationEqual toItem:nil
+                                                     attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:profileImageView attribute:NSLayoutAttributeHeight
+                                                     relatedBy:NSLayoutRelationEqual toItem:nil
+                                                     attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
     
     // add vertical constraints to username, userhandle & date labels
     [self addConstraint:[NSLayoutConstraint constraintWithItem:super.retweetHeaderLabel attribute:NSLayoutAttributeBottom
                                                      relatedBy:NSLayoutRelationEqual toItem:usernameLabel
-                                                     attribute:NSLayoutAttributeTop multiplier:1.0 constant:-5]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:super.retweetHeaderLabel attribute:NSLayoutAttributeBottom
+                                                     attribute:NSLayoutAttributeTop multiplier:1.0 constant:-10]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:usernameLabel attribute:NSLayoutAttributeBottom
                                                      relatedBy:NSLayoutRelationEqual toItem:userhandleLabel
-                                                     attribute:NSLayoutAttributeTop multiplier:1.0 constant:-7]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:super.retweetHeaderLabel attribute:NSLayoutAttributeBottom
+                                                     attribute:NSLayoutAttributeTop multiplier:1.0 constant:-5]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:[super.content getTextView] attribute:NSLayoutAttributeBottom
                                                      relatedBy:NSLayoutRelationEqual toItem:dateLabel
-                                                     attribute:NSLayoutAttributeTop multiplier:1.0 constant:-7]];
-    
-    // add constraints for shrinking of the userhandleLabel (lower priority)
-    NSLayoutConstraint *userhandleLabelWidthConstraint = [NSLayoutConstraint constraintWithItem:userhandleLabel
-                                                                                      attribute:NSLayoutAttributeWidth
-                                                                                      relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                                         toItem:nil
-                                                                                      attribute:NSLayoutAttributeNotAnAttribute
-                                                                                     multiplier:1
-                                                                                       constant:20];
-    userhandleLabelWidthConstraint.priority = UILayoutPriorityDefaultLow;
-    [self addConstraint:userhandleLabelWidthConstraint];
+                                                     attribute:NSLayoutAttributeTop multiplier:1.0 constant:-5]];
     
     // add constraints separating all labels & images
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"H:|-7-[profileImageView]-7-[usernameLabel]-5-[userhandleLabel]-(>=5)-[dateLabel]-5-|"
+                          constraintsWithVisualFormat:@"H:|-7-[profileImageView]-7-[usernameLabel]"
+                          options:NSLayoutFormatDirectionLeadingToTrailing
+                          metrics:nil
+                          views:NSDictionaryOfVariableBindings(profileImageView, usernameLabel)]];
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"H:|-7-[profileImageView]-7-[userhandleLabel]"
+                          options:NSLayoutFormatDirectionLeadingToTrailing
+                          metrics:nil
+                          views:NSDictionaryOfVariableBindings(profileImageView, userhandleLabel)]];
+    [self addConstraints:[NSLayoutConstraint
+                          constraintsWithVisualFormat:@"H:|-10-[dateLabel]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
                           views:NSDictionaryOfVariableBindings(profileImageView, usernameLabel, userhandleLabel, dateLabel)]];
@@ -159,21 +167,23 @@
 - (void)addConstraintsToTweetTextView
 {
     UITextView *tweetTextView = [super.content getTextView];
-    UILabel *usernameLabel = super.userhandleLabel;
     
     tweetTextView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"H:|-40-[tweetTextView]-5-|"
+                          constraintsWithVisualFormat:@"H:|-10-[tweetTextView]-10-|"
                           options:NSLayoutFormatDirectionLeftToRight
                           metrics:nil
                           views:NSDictionaryOfVariableBindings(tweetTextView)]];
     
-    [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:[usernameLabel]-5-[tweetTextView]"
-                          options:NSLayoutFormatDirectionLeftToRight
-                          metrics:nil
-                          views:NSDictionaryOfVariableBindings(usernameLabel, tweetTextView)]];
+    [self addConstraint:[NSLayoutConstraint
+                         constraintWithItem:super.profileImageView
+                         attribute:NSLayoutAttributeBottom
+                         relatedBy:NSLayoutRelationEqual
+                         toItem:tweetTextView
+                         attribute:NSLayoutAttributeTop
+                         multiplier:1
+                         constant:-5]];
     
     super.tweetTextViewHeightConstraint = [NSLayoutConstraint constraintWithItem:tweetTextView
                                                                   attribute:NSLayoutAttributeHeight
@@ -187,11 +197,10 @@
 
 - (void)addConstraintsToFooterLine
 {
-    UITextView *tweetTextView = [super.content getTextView];
-    
     UIImageView *replyImageView = super.replyImageView;
     UIImageView *retweetImageView = super.retweetImageView;
     UIImageView *favoriteImageView = super.favoriteImageView;
+    UILabel *dateLabel = super.dateLabel;
     
     replyImageView.translatesAutoresizingMaskIntoConstraints = NO;
     retweetImageView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -199,22 +208,22 @@
     
     // add vertical constraints to replyImageView
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:[tweetTextView]-[replyImageView]"
+                          constraintsWithVisualFormat:@"V:[dateLabel]-[replyImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
-                          views:NSDictionaryOfVariableBindings(tweetTextView, replyImageView)]];
+                          views:NSDictionaryOfVariableBindings(dateLabel, replyImageView)]];
     // add vertical constraints to retweetImageView
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:[tweetTextView]-[retweetImageView]"
+                          constraintsWithVisualFormat:@"V:[dateLabel]-[retweetImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
-                          views:NSDictionaryOfVariableBindings(tweetTextView, retweetImageView)]];
+                          views:NSDictionaryOfVariableBindings(dateLabel, retweetImageView)]];
     // add vertical constraints to favoriteImageView
     [self addConstraints:[NSLayoutConstraint
-                          constraintsWithVisualFormat:@"V:[tweetTextView]-[favoriteImageView]"
+                          constraintsWithVisualFormat:@"V:[dateLabel]-[favoriteImageView]"
                           options:NSLayoutFormatDirectionLeadingToTrailing
                           metrics:nil
-                          views:NSDictionaryOfVariableBindings(tweetTextView, favoriteImageView)]];
+                          views:NSDictionaryOfVariableBindings(dateLabel, favoriteImageView)]];
     
     [self addConstraints:[NSLayoutConstraint
                           constraintsWithVisualFormat:@"H:|-40-[replyImageView]-25-[retweetImageView]-25-[favoriteImageView]"
@@ -231,7 +240,7 @@
     CGFloat headerLineHeight = 5 + 20;
     CGFloat footerLineHeight = super.replyImageView.frame.size.height;
     CGFloat retweetHeaderLineBuffer = 30;
-    return textViewHeight + headerLineHeight + footerLineHeight + retweetHeaderLineBuffer;
+    return textViewHeight + headerLineHeight + footerLineHeight + retweetHeaderLineBuffer + 100;
 }
 
 @end

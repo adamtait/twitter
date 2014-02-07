@@ -12,6 +12,7 @@
 
     // public static methods
     + (UIFont *)defaultFont;
+    + (UIFont *)largerFont;
 
     // accessors
     - (UITextView *)getTextView;

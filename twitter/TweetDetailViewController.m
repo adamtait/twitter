@@ -7,13 +7,13 @@
 //
 
 #import "TweetDetailViewController.h"
-#import "ShortTweetView.h"
+#import "FullTweetView.h"
 
 @interface TweetDetailViewController ()
 
     // private properties
     @property (nonatomic, strong) Tweet *tweet;
-    @property (nonatomic, strong) ShortTweetView *tweetView;
+    @property (nonatomic, strong) FullTweetView *tweetView;
 
 @end
 
@@ -26,7 +26,7 @@
         _tweet = tweet;
         self.navigationItem.title = @"tweet";
         
-        _tweetView = [[ShortTweetView alloc] initWithFrame:CGRectMake(0, 80, 320, 300)];
+        _tweetView = [[FullTweetView alloc] initWithFrame:CGRectMake(0, 80, 320, 300)];
         [self.view addSubview:_tweetView];
     }
     return self;

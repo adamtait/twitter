@@ -25,6 +25,11 @@
     return [UIFont systemFontOfSize:14.0];
 }
 
++ (UIFont *)largerFont
+{
+    return [UIFont systemFontOfSize:16.0];
+}
+
 
 #pragma public instance methods
 
