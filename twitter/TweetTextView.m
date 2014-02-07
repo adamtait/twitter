@@ -43,6 +43,7 @@
         _textView.textContainerInset = UIEdgeInsetsZero;
         _textView.editable = NO;
         [_textView setUserInteractionEnabled:NO];
+        _textView.dataDetectorTypes = UIDataDetectorTypeLink;
     }
     return self;
 }
